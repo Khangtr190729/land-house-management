@@ -1,0 +1,299 @@
+.tb-container {
+    padding: 30px;
+}
+
+/* HEADER */
+.tb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.tb-sub {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.tb-tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.tb-tab {
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    background: #f1f3f5;
+    color: #333;
+    font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.tb-tab:hover {
+    background: #e2e6ea;
+}
+
+.tb-tab.active {
+    background: #0d6efd;
+    color: white;
+}
+
+/* GRID */
+.tb-grid {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr; /* chỉnh lại cân hơn */
+    gap: 25px;
+    align-items: start;
+}
+
+/* LEFT CARD */
+.tb-card {
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.tb-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tb-divider {
+    height: 1px;
+    background: #e9ecef;
+    margin: 20px 0;
+}
+
+.tb-divider.soft {
+    background: #f1f3f5;
+}
+
+/* BILL INFO */
+.tb-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+    margin-top: 10px;
+}
+
+.tb-line {
+    font-size: 14px;
+}
+
+.tb-label {
+    color: #6b7280;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.tb-value {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* TOTAL BOX */
+.tb-total-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f3f4f6;
+    padding: 18px 22px;
+    border-radius: 14px;
+    margin-top: 10px;
+}
+
+.tb-total-label {
+    font-weight: 600;
+    font-size: 15px;
+    color: #333;
+}
+
+.tb-total-value {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #2563eb;
+}
+/* COMMON BOX */
+.tb-paid-box {
+    padding: 20px 20px;
+    border-radius: 16px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+/* SUCCESS (PAID) */
+.tb-paid-box.success {
+    background: #e6f4ea;
+}
+
+.tb-paid-box.success .tb-paid-icon {
+    background: #16a34a;
+}
+
+.tb-paid-box.success .tb-paid-title {
+    color: #166534;
+}
+
+.tb-paid-box.success .tb-paid-sub {
+    color: #15803d;
+}
+
+/* DANGER (UNPAID) */
+.tb-paid-box.danger {
+    background: #fdecea;
+}
+
+.tb-paid-box.danger .tb-paid-icon {
+    background: #dc3545;
+}
+
+.tb-paid-box.danger .tb-paid-title {
+    color: #b02a37;
+}
+
+.tb-paid-box.danger .tb-paid-sub {
+    color: #dc3545;
+}
+
+/* ICON */
+.tb-paid-icon {
+    width: 30px;
+    height: 30px;
+    margin: 0 auto 10px;
+    border-radius: 50%;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* VIEW DETAIL BUTTON */
+.tb-detail-btn {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 10px 20px;
+    background-color: #0d6efd;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.2s ease;
+    float: right;
+}
+
+.tb-detail-btn:hover {
+    background-color: #0b5ed7;
+    color: #fff;
+}
+
+/* BADGE */
+.tb-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tb-badge.paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.tb-badge.unpaid {
+    background: #fdecea;
+    color: #dc3545;
+}
+
+/* RIGHT SIDE SUMMARY */
+.tb-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; 
+}
+
+/* CARD */
+.tb-summary-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    transition: all 0.25s ease;
+}
+
+.tb-summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+}
+
+/* ICON */
+.tb-summary-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+/* last payment */
+.tb-summary-card.secondary .tb-summary-icon {
+    background: #f1f3f5;
+    color: #6c757d;
+}
+
+.tb-no-payment {
+    font-size: 14px;
+    color: #6c757d;
+    font-style: italic;
+}
+/* TEXT */
+.tb-summary-label {
+    font-size: 14px;
+    color: #6c757d;
+    display: block;
+    margin-bottom: 6px;
+}
+
+/* BIG VALUE */
+.tb-summary-card h4 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.tb-summary-card h5 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.tb-summary-card .tb-payment-amount {
+    margin-top: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #198754;
+}
+/* COLORS */
+.tb-summary-card.danger .tb-summary-icon {
+    background: #fdecea;
+    color: #dc3545;
+}
+
+.tb-summary-card.success .tb-summary-icon {
+    background: #e6f4ea;
+    color: #198754;
+}
+
+.tb-summary-card.primary .tb-summary-icon {
+    background: #e7f1ff;
+    color: #0d6efd;
+}
