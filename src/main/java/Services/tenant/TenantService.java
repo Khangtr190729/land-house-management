@@ -160,7 +160,7 @@ public class TenantService {
     }
 
     public boolean hasActiveContract(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        return tenantDAO.hasActiveContract(id);
     }
 
 }
