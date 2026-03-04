@@ -107,9 +107,9 @@ public class AdminAddRoomController extends HttpServlet {
                     imageCount++;
                 }
             }
-            if (imageCount < 8 || imageCount > 12) {
+            if ( imageCount > 12) {
                 req.setAttribute("blocks", blockDAO.findAllActive());
-                req.setAttribute("err", "Images must be between 8 and 12");
+                req.setAttribute("err", "A maximum of 12 images are allowed.");
                 req.getRequestDispatcher("/views/admin/createRoom.jsp").forward(req, resp);
                 return;
             }
