@@ -40,7 +40,6 @@
                     <option value="">All status</option>
                     <option value="PAID">PAID</option>
                     <option value="UNPAID">UNPAID</option>
-                    <option value="OVERDUE">OVERDUE</option>
                     <option value="CANCELLED">CANCELLED</option>
                 </select>
             </div>
@@ -62,6 +61,7 @@
                         <th>Due Date</th>
                         <th>Total Amount</th>
                         <th>Status</th>
+                        <th>Payment Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -89,12 +89,8 @@
                                         <span class="mb-badge paid">PAID</span>
                                     </c:when>
 
-                                    <c:when test="${b.status eq 'OVERDUE'}">
-                                        <span class="mb-badge overdue">OVERDUE</span>
-                                    </c:when>
-
                                     <c:when test="${b.status eq 'CANCELLED'}">
-                                        <span class="mb-badge cancelled">CANCELLED</span>
+                                        <span  class="mb-badge cancelled">CANCELLED</span>
                                     </c:when>
 
                                     <c:otherwise>
@@ -102,7 +98,32 @@
                                     </c:otherwise>
                                 </c:choose>
                             </td>
-                            S                            <td>
+                            <td>
+                                <c:choose>
+
+                                    
+                                    <c:when test="${empty b.paymentStatus}">
+                                        <span class="mb-badge nopayment">NO REQUEST</span>
+                                    </c:when>
+
+                                    
+                                    <c:when test="${b.paymentStatus eq 'PENDING'}">
+                                        <span class="mb-badge pending">PENDING</span>
+                                    </c:when>
+
+                                    
+                                    <c:when test="${b.paymentStatus eq 'CONFIRMED'}">
+                                        <span class="mb-badge paid">CONFIRMED</span>
+                                    </c:when>
+
+                                    
+                                    <c:when test="${b.paymentStatus eq 'REJECTED'}">
+                                        <span class="mb-badge cancelled">REJECTED</span>
+                                    </c:when>
+
+                                </c:choose>
+                            </td>
+                            <td>
                                 <a href="${pageContext.request.contextPath}/manager/billing/detail?billId=${b.billId}"
                                    class="mb-view-btn">
                                     👁 View

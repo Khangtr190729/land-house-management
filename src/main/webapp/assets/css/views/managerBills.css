@@ -154,6 +154,11 @@
     color: white;
 }
 
+.mb-badge.cancelled {
+    background: #6b7280; 
+    color: white;
+}
+
 /* VIEW BUTTON */
 .mb-view-btn {
     padding: 6px 12px;
@@ -168,7 +173,15 @@
 .mb-view-btn:hover {
     background: #e5e7eb;
 }
+.mb-badge.nopayment{
+    background:#eee;
+    color:#555;
+}
 
+.mb-badge.pending{
+    background:#fff3cd;
+    color:#856404;
+}
 /* EMPTY */
 .mb-empty {
     text-align: center;
