@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Bui Nhu Y
  */
-@WebServlet(name = "TenantUtilitiesController", urlPatterns = {"/tenant/utility"})
+@WebServlet(name = "TenantUtilityController", urlPatterns = {"/tenant/utility"})
 public class TenantUtilityController extends HttpServlet {
 
     /**
