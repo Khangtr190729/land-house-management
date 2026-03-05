@@ -25,13 +25,11 @@
 
             <!-- TABS -->
             <div class="tb-tabs">
-                <a href="${pageContext.request.contextPath}/tenant/bill"
-                   class="tb-tab active">
+                <a href="${pageContext.request.contextPath}/tenant/bill" class="tb-tab active">
                     <i class="bi bi-receipt"></i> My Bills
                 </a>
 
-                <a href="${pageContext.request.contextPath}/tenant/paymentHistory"
-                   class="tb-tab">
+                <a href="${pageContext.request.contextPath}/tenant/paymentHistory" class="tb-tab">
                     <i class="bi bi-clock-history"></i> Payment History
                 </a>
             </div>
@@ -45,7 +43,7 @@
 
                 <div class="tb-card-header">
                     <div>
-                        <h2>Bill #${Bill.billId}</h2>
+                        <h3>Bill #${Bill.billId}</h3>
                         <span>Monthly rental invoice</span>
                     </div>
 
@@ -53,9 +51,7 @@
                         <c:when test="${Bill.status eq 'PAID'}">
                             <span class="tb-badge paid">PAID</span>
                         </c:when>
-                        <c:when test="${Bill.status eq 'OVERDUE'}">
-                            <span class="tb-badge overdue">OVERDUE</span>
-                        </c:when>
+
                         <c:when test="${Bill.status eq 'CANCELLED'}">
                             <span class="tb-badge cancelled">CANCELLED</span>
                         </c:when>
@@ -193,12 +189,100 @@
                         </h4>
                     </div>
                 </div>
+            </div>
+        </div>
+        <!-- BILL LIST SECTION -->
+        <div class="bill-section">
 
+            <div class="bill-header">
+                <h3>My Bills (${totalBills})</h3>
+            </div>
+
+            <div class="bill-table-wrapper">
+                <table class="bill-table">
+                    <thead>
+                        <tr>
+                            <th>Bill ID</th>
+                            <th>Month</th>
+                            <th>Due Date</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Payment Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <c:forEach var="b" items="${billTenant}">
+                            <tr>
+                                <td>#${b.billId}</td>
+                                <td>
+                                    <fmt:formatDate value="${b.month}" pattern="dd/MM/yyyy"/>
+                                </td>
+                                <td>
+                                    <fmt:formatDate value="${b.dueDate}" pattern="dd/MM/yyyy"/>
+                                </td>
+                                <td class="amount">
+                                    <fmt:formatNumber value="${b.totalAmount}" type="number"/> đ
+                                </td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${b.status eq 'PAID'}">
+                                            <span class="status paid">PAID</span>
+                                        </c:when>
+                                        <c:when test="${b.status eq 'CANCELLED'}">
+                                            <span class="status cancelled">CANCELLED</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="status unpaid">UNPAID</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <c:choose>
+
+                                        <c:when test="${empty b.paymentStatus}">
+                                            <span class="mb-badge nopayment">NO REQUEST</span>
+                                        </c:when>
+
+                                        <c:when test="${b.paymentStatus eq 'PENDING'}">
+                                            <span class="mb-badge pending">PENDING</span>
+                                        </c:when>
+
+                                        <c:when test="${b.paymentStatus eq 'CONFIRMED'}">
+                                            <span class="mb-badge paid">CONFIRMED</span>
+                                        </c:when>
+
+                                        <c:when test="${b.paymentStatus eq 'REJECTED'}">
+                                            <span class="mb-badge cancelled">REJECTED</span>
+                                        </c:when>
+
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/tenant/billdetail?billId=${b.billId}"
+                                       class="btn-view">
+                                        View Detail
+                                    </a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+
+                        <c:if test="${empty billTenant}">
+                            <tr>
+                                <td colspan="7" class="empty-row">
+                                    No bills found.
+                                </td>
+                            </tr>
+                        </c:if>
+
+                    </tbody>
+                </table>
             </div>
 
         </div>
-
     </div>
+
     <div id="billModal" class="custom-modal">
 
         <div class="custom-modal-content">
@@ -288,7 +372,7 @@
                         </div>
                     </c:when>
 
-                    <c:when test="${Bill.status eq 'UNPAID' or Bill.status eq 'OVERDUE'}">
+                    <c:when test="${Bill.status eq 'UNPAID'}">
 
                         <c:if test="${not empty pendingPayment}">
                             <div class="alert alert-warning">
@@ -308,7 +392,7 @@
                                     <option value="BANK">Bank Transfer</option>
                                     <option value="CASH">Cash</option>
                                 </select>
-                                
+
                                 <div id="qrContainer" style="display: none ; text-align:center;">
                                     <img id="qrImage"
                                          src="${pageContext.request.contextPath}${qr}"  alt="QR Code" style="width:200px; height:200px;">
