@@ -11,6 +11,7 @@ import java.util.List;
 import DALs.Bill.BillDAO;
 import DALs.Bill.PaymentConfirmBillDAO;
 import Models.authentication.AuthResult;
+import Models.dto.ManagerBillRowDTO;
 import Models.entity.Bill;
 import Models.entity.BillDetail;
 import Models.entity.Payment;
@@ -51,6 +52,7 @@ public class TenantMyBillController extends HttpServlet {
         BigDecimal totalTenantUnpaid = bd.getTotalTenantUnpaid(tenant_id);
         Payment lastPayment = bd.getLastPaidAmountByTenant(tenant_id);
         String RoomNumber = bd.getRoomNumberByTenantId(tenant_id);
+        List<ManagerBillRowDTO> listTenantBills = bd.listBillForTenant(tenant_id);
         BigDecimal totalAmount = BigDecimal.ZERO;
         
         if(b != null) {
@@ -63,6 +65,8 @@ public class TenantMyBillController extends HttpServlet {
         request.setAttribute("totalTenantUnpaid", totalTenantUnpaid);
         request.setAttribute("lastPayment", lastPayment);
         request.setAttribute("ListBillDetail", listBillDetail);
+        request.setAttribute("billTenant", listTenantBills);
+        request.setAttribute("totalBills", listTenantBills.size());
         request.setAttribute("pendingPayment", pending);
         request.setAttribute("qr", payment_qr);
         request.getRequestDispatcher("/views/tenant/myBill.jsp").forward(request, response);
