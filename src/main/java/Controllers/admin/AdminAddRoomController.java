@@ -107,7 +107,7 @@ public class AdminAddRoomController extends HttpServlet {
                     imageCount++;
                 }
             }
-            if ( imageCount > 12) {
+            if (imageCount > 12) {
                 req.setAttribute("blocks", blockDAO.findAllActive());
                 req.setAttribute("err", "A maximum of 12 images are allowed.");
                 req.getRequestDispatcher("/views/admin/createRoom.jsp").forward(req, resp);
@@ -127,8 +127,11 @@ public class AdminAddRoomController extends HttpServlet {
             }
             for (Part p : parts) {
                 if ("images".equals(p.getName()) && p.getSize() > 0) {
+
                     String fileName = System.currentTimeMillis() + "_" + p.getSubmittedFileName();
+
                     p.write(uploadPath + File.separator + fileName);
+
                     imgDAO.insertImage(roomId, fileName);
                 }
             }
