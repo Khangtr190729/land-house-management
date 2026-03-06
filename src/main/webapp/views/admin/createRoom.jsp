@@ -83,7 +83,7 @@
 
                 <!-- IMAGES -->
                 <div class="form-group">
-                    <label>Room Images (8-12)</label>
+                    <label>Room Images (0-12)</label>
                     <input type="file"
                            name="images"
                            multiple
