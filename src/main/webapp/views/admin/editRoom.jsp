@@ -112,6 +112,9 @@
                             <div class="er-alert-text">
                                 <c:choose>
                                     <c:when test="${param.msg == 'updated'}">Room updated successfully.</c:when>
+                                    <c:when test="${param.msg == 'uploaded'}">Image uploaded successfully.</c:when>
+                                    <c:when test="${param.msg == 'img_deleted'}">Image deleted successfully.</c:when>
+                                    <c:when test="${param.msg == 'cover_set'}">Cover image updated successfully.</c:when>
                                     <c:otherwise>${param.msg}</c:otherwise>
                                 </c:choose>
                             </div>
@@ -134,6 +137,16 @@
                                     <c:when test="${param.err == 'occupied_locked'}">Occupied room cannot change status.</c:when>
                                     <c:when test="${param.err == 'room_inactive_locked'}">Inactive room cannot be edited.</c:when>
                                     <c:when test="${param.err == 'update_fail'}">Failed to update room.</c:when>
+
+                                    <c:when test="${param.err == 'no_file'}">Please choose an image to upload.</c:when>
+                                    <c:when test="${param.err == 'invalid_file'}">Uploaded file is not a valid image.</c:when>
+                                    <c:when test="${param.err == 'invalid_ext'}">Only JPG, JPEG, PNG, GIF, or WEBP images are allowed.</c:when>
+                                    <c:when test="${param.err == 'upload_fail'}">Failed to upload image.</c:when>
+                                    <c:when test="${param.err == 'invalid_image'}">Invalid image.</c:when>
+                                    <c:when test="${param.err == 'delete_fail'}">Failed to delete image.</c:when>
+                                    <c:when test="${param.err == 'cover_fail'}">Failed to set cover image.</c:when>
+                                    <c:when test="${param.err == 'invalid_data'}">Submitted data is invalid.</c:when>
+                                    <c:when test="${param.err == 'upload_path_missing'}">Upload path is not configured.</c:when>
                                     <c:otherwise>${param.err}</c:otherwise>
                                 </c:choose>
                             </div>
@@ -338,7 +351,7 @@
                     <input class="form-control"
                            type="file"
                            name="image"
-                           accept="image/*"
+                           accept=".jpg,.jpeg,.png,.gif,.webp,image/*"
                            required />
 
                     <button class="er-btn success" type="submit">

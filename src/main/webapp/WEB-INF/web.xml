@@ -9,6 +9,12 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
+
+    <context-param>
+        <param-name>roomImageSourceDir</param-name> <!-- clone ve thi edit url nay theo may-->
+        <param-value>C:/Users/LENOVO/OneDrive/Desktop/Ky-5/SWP391/LandHouseManagement/src/main/webapp/assets/images/rooms</param-value>
+    </context-param>
+
     <!-- context param dẫn tới contact.properties ( file giống json )-->
     <context-param>
         <param-name>contact_props_path</param-name>
