@@ -49,6 +49,7 @@ public class MaintenanceRequestDAO extends DBContext {
     }
 
     public MaintenanceRequestDTO getRequestById(int id) {
+
         String sql = "SELECT "
                 + "mr.request_id, "
                 + "r.room_number, "
@@ -63,24 +64,29 @@ public class MaintenanceRequestDAO extends DBContext {
                 + "JOIN ROOM r ON mr.room_id = r.room_id "
                 + "JOIN TENANT t ON mr.tenant_id = t.tenant_id "
                 + "WHERE mr.request_id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, id);
-            if (rs.next()) {
-                MaintenanceRequestDTO dto = new MaintenanceRequestDTO();
-                dto.setRequestId(rs.getInt("request_id"));
-                dto.setRoomNumber(rs.getString("room_number"));
-                dto.setFullName(rs.getString("full_name"));
-                dto.setIssueCategory(rs.getString("issue_category"));
-                dto.setStatus(rs.getString("status"));
-                dto.setDescription(rs.getString("description"));
-                dto.setImageUrl(rs.getString("image_url"));
-                dto.setCreatedAt(rs.getTimestamp("created_at"));
-                dto.setCompletedAt(rs.getTimestamp("completed_at"));
-                return dto;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    MaintenanceRequestDTO dto = new MaintenanceRequestDTO();
+                    dto.setRequestId(rs.getInt("request_id"));
+                    dto.setRoomNumber(rs.getString("room_number"));
+                    dto.setFullName(rs.getString("full_name"));
+                    dto.setIssueCategory(rs.getString("issue_category"));
+                    dto.setStatus(rs.getString("status"));
+                    dto.setDescription(rs.getString("description"));
+                    dto.setImageUrl(rs.getString("image_url"));
+                    dto.setCreatedAt(rs.getTimestamp("created_at"));
+                    dto.setCompletedAt(rs.getTimestamp("completed_at"));
+                    return dto;
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
@@ -95,5 +101,31 @@ public class MaintenanceRequestDAO extends DBContext {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public void updateStatus(int id, String status) {
+
+        String sql = """
+        UPDATE MAINTENANCE_REQUEST
+        SET status=?,
+            completed_at =
+                CASE WHEN ?='DONE'
+                     THEN GETDATE()
+                     ELSE NULL
+                END
+        WHERE request_id=?
+        """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, status);
+            ps.setString(2, status);
+            ps.setInt(3, id);
+
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
