@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  * @author truon
  */
-public class MaintenanceRequestController extends HttpServlet {
+public class MaintenanceRequestForManagerController extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
