@@ -128,4 +128,47 @@ public class MaintenanceRequestDAO extends DBContext {
             e.printStackTrace();
         }
     }
+
+    public List<MaintenanceRequestDTO> getRequestsByTenantId(int tenantId) {
+        List<MaintenanceRequestDTO> list = new ArrayList<>();
+
+        String sql = """
+        SELECT 
+            mr.request_id,
+            r.room_number,
+            t.full_name,
+            mr.issue_category,
+            mr.status,
+            mr.description,
+            mr.created_at
+        FROM MAINTENANCE_REQUEST mr
+        JOIN ROOM r ON mr.room_id = r.room_id
+        JOIN TENANT t ON mr.tenant_id = t.tenant_id
+        WHERE mr.tenant_id = ?
+        ORDER BY mr.created_at DESC
+    """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, tenantId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                MaintenanceRequestDTO dto = new MaintenanceRequestDTO();
+                dto.setRequestId(rs.getInt("request_id"));
+                dto.setRoomNumber(rs.getString("room_number"));
+                dto.setFullName(rs.getString("full_name"));
+                dto.setIssueCategory(rs.getString("issue_category"));
+                dto.setStatus(rs.getString("status"));
+                dto.setDescription(rs.getString("description"));
+                dto.setCreatedAt(rs.getTimestamp("created_at"));
+
+                list.add(dto);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
 }
