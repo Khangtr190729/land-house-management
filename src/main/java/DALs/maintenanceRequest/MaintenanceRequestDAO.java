@@ -4,14 +4,13 @@
  */
 package DALs.maintenanceRequest;
 
-import Models.dto.MaintenanceRequestDTO;
-import Models.entity.MaintenanceRequest;
-import Utils.database.DBContext;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+
+import Models.dto.MaintenanceRequestDTO;
+import Utils.database.DBContext;
 
 /**
  *
@@ -27,7 +26,7 @@ public class MaintenanceRequestDAO extends DBContext {
                 + "t.full_name, "
                 + "mr.issue_category, "
                 + "mr.status, "
-                + "mr.description, "
+                + "mr.description "
                 + "FROM MAINTENANCE_REQUEST mr "
                 + "JOIN ROOM r ON mr.room_id = r.room_id "
                 + "JOIN TENANT t ON mr.tenant_id = t.tenant_id "
@@ -83,5 +82,18 @@ public class MaintenanceRequestDAO extends DBContext {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @SuppressWarnings("CallToPrintStackTrace")
+    public int countRequest() {
+        String sql = "SELECT COUNT(*) FROM MAINTENANCE_REQUEST";
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
