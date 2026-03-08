@@ -4,6 +4,10 @@
         <servlet-name>MaintenanceRequest</servlet-name>
         <servlet-class>Controllers.manager.MaintenanceRequestForManagerController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MaintenanceRequestForTenantController</servlet-name>
+        <servlet-class>Controllers.tenant.MaintenanceRequestForTenantController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>AdminAddRoomControllerNewServlet</servlet-name>
         <url-pattern>/admin/rooms/create</url-pattern>
@@ -11,6 +15,10 @@
     <servlet-mapping>
         <servlet-name>MaintenanceRequest</servlet-name>
         <url-pattern>/manager/maintenance</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MaintenanceRequestForTenantController</servlet-name>
+        <url-pattern>/maintenance</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
