@@ -13,6 +13,8 @@ import java.sql.Timestamp;
 public class MaintenanceRequestDTO {
 
     private int requestId;
+    private int tenantId;
+
     private String roomNumber;
     private String fullName;
     private String issueCategory;
@@ -31,6 +33,14 @@ public class MaintenanceRequestDTO {
 
     public void setRequestId(int requestId) {
         this.requestId = requestId;
+    }
+
+    public int getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(int tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getRoomNumber() {
