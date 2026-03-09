@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Models.dto;
 
 import java.sql.Timestamp;
@@ -14,7 +10,7 @@ public class MaintenanceRequestDTO {
 
     private int requestId;
     private int tenantId;
-
+    private int roomId;
     private String roomNumber;
     private String fullName;
     private String issueCategory;
@@ -41,6 +37,14 @@ public class MaintenanceRequestDTO {
 
     public void setTenantId(int tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 
     public String getRoomNumber() {
