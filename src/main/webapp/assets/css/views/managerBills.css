@@ -214,3 +214,36 @@
     font-weight: bold;
     pointer-events: none;
 }
+.mb-actions{
+    display:flex;
+    gap:6px;
+}
+
+/* style chung cho 2 nút */
+.mb-edit-btn,
+.mb-cancel-btn{
+    color: white;
+    padding: 4px 8px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 13px;
+}
+
+/* màu riêng */
+.mb-edit-btn{
+    background: #3498db;
+}
+
+.mb-cancel-btn{
+    background: #e74c3c;
+}
+
+/* disabled giống nhau */
+.mb-edit-btn.disabled,
+.mb-cancel-btn.disabled{
+    background: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    pointer-events: none;
+}
