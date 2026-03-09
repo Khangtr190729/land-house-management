@@ -40,8 +40,11 @@ public class MaintenanceRequestForManagerController extends HttpServlet {
                 pageIndex = 1;
             }
         }
-
-        int totalRequest = dao.countRequest();
+        String search = request.getParameter("search");
+        if (search == null) {
+            search = "";
+        }
+        int totalRequest = dao.countRequest(search);
         int totalPage = (int) Math.ceil((double) totalRequest / pageSize);
 
         if (totalPage == 0) {
@@ -55,7 +58,7 @@ public class MaintenanceRequestForManagerController extends HttpServlet {
         if (pageIndex > totalPage) {
             pageIndex = totalPage;
         }
-        List<MaintenanceRequestDTO> list = dao.getAllRequests(pageIndex, pageSize);
+        List<MaintenanceRequestDTO> list = dao.getAllRequests(pageIndex, pageSize, search);
         request.setAttribute("requests", list);
         request.setAttribute("totalRequest", totalRequest);
         request.setAttribute("pageIndex", pageIndex);
