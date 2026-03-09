@@ -55,7 +55,7 @@ public class MaintenanceRequestForManagerController extends HttpServlet {
         if (pageIndex > totalPage) {
             pageIndex = totalPage;
         }
-        List<MaintenanceRequestDTO> list = dao.getAllRequests();
+        List<MaintenanceRequestDTO> list = dao.getAllRequests(pageIndex, pageSize);
         request.setAttribute("requests", list);
         request.setAttribute("totalRequest", totalRequest);
         request.setAttribute("pageIndex", pageIndex);
