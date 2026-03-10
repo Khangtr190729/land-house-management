@@ -5,6 +5,7 @@
 package Controllers.tenant;
 
 import DALs.utilities.utilitiesDAO;
+import Models.authentication.AuthResult;
 import Models.entity.Utility;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -77,7 +79,35 @@ public class TenantUtilityController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession session = request.getSession(false);
+        AuthResult auth = (AuthResult) session.getAttribute("auth");
+        int tenantId = auth.getTenant().getTenantId();
+
+        utilitiesDAO dao = new utilitiesDAO();
+        int billId = dao.getUnpaidBillIdByTenantId(tenantId);
+
+        if (billId == -1) {
+            response.sendRedirect(request.getContextPath() + "/tenant/utility");
+            return;
+        }
+
+        // Xóa OTHER cũ trước
+        dao.removeAllOtherBillDetail(billId);
+
+        // Lấy danh sách utilityId được tick
+        String[] selectedIds = request.getParameterValues("utilityIds");
+
+        if (selectedIds != null) {
+            for (String idStr : selectedIds) {
+                int utilityId = Integer.parseInt(idStr);
+                Utility u = dao.getUtilityById(utilityId);
+                if (u != null) {
+                    dao.addBillDetail(billId, u.getUtilityName(), u.getUnit(), u.getStandardPrice());
+                }
+            }
+        }
+
+        response.sendRedirect(request.getContextPath() + "/tenant/utility");
     }
 
     /**
