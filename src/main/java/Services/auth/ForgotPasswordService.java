@@ -42,9 +42,7 @@ public class ForgotPasswordService {
         // Tìm Staff
         Integer staffId = staffDAO.findStaffIdByEmail(email);
         if (staffId != null) {
-            // Staff dùng staffId nhưng OTP_CODE.tenant_id có thể có FK constraint
-            // → dùng staffId âm (-staffId) để phân biệt, hoặc dùng cột riêng
-            // Cách an toàn nhất: insert với staffId, dùng purpose = RESET_PASSWORD_STAFF
+            
             boolean sent = sendOtpFor(staffId, email, "RESET_PASSWORD_STAFF", true);
             return sent ? "SENT" : "MAIL_FAILED";
         }
