@@ -317,4 +317,95 @@ public class ManageAccountDAO extends DBContext {
 
         return false;
     }
+
+    public int countTenants() {
+
+        String sql = "SELECT COUNT(*) FROM TENANT";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public AdminAccountRowDTO getManagerById(int id) {
+
+        String sql = """
+        SELECT 
+        staff_id,
+        full_name,
+        email,
+        phone_number,
+        identity_code,
+        date_of_birth,
+        gender,
+        status,
+        created_at
+        FROM STAFF
+        WHERE staff_id = ?
+    """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                AdminAccountRowDTO dto = new AdminAccountRowDTO();
+
+                dto.setAccountType("STAFF");
+                dto.setAccountId(rs.getInt("staff_id"));
+                dto.setFullName(rs.getString("full_name"));
+                dto.setEmail(rs.getString("email"));
+                dto.setPhone(rs.getString("phone_number"));
+                dto.setIdentityCode(rs.getString("identity_code"));
+                dto.setDateOfBirth(rs.getDate("date_of_birth"));
+                dto.setGender(rs.getInt("gender"));
+                dto.setStatus(rs.getString("status"));
+                dto.setCreatedAt(rs.getTimestamp("created_at"));
+
+                return dto;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean updateManager(int id, String name, String email) {
+
+        String sql = """
+        UPDATE STAFF
+        SET full_name = ?,
+            email = ?,
+            updated_at = GETDATE()
+        WHERE staff_id = ?
+        AND staff_role = 'MANAGER'
+    """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setInt(3, id);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }
