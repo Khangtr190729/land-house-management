@@ -164,6 +164,19 @@
                                             </span>
                                             Reset Password
                                         </button>
+                                        <!--UpDate ManageAccount-->
+
+                                        <c:if test="${a.accountType == 'STAFF'}">
+                                            <button type="button"
+                                                    class="ma-action-btn primary"
+                                                    onclick="window.location.href = '${pageContext.request.contextPath}/admin/accounts/update?id=${a.accountId}'">
+
+                                                <span class="ma-action-ico">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </span>
+                                                Update
+                                            </button>
+                                        </c:if>
 
                                     </div>
                                 </td>
