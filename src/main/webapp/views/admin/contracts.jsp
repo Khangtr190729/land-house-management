@@ -19,16 +19,6 @@
                 <h2>Manage Contracts</h2>
                 <p>View and manage all rental contracts</p>
             </div>
-
-            <button type="button" class="mc-generate-btn" onclick="openContractTypeModal()">
-                <span class="mc-btn-ico" aria-hidden="true">
-                    <!-- bootstrap icon: plus -->
-                    <svg viewBox="0 0 16 16">
-                    <path d="M8 1a.5.5 0 0 1 .5.5V7.5H14.5a.5.5 0 0 1 0 1H8.5V14.5a.5.5 0 0 1-1 0V8.5H1.5a.5.5 0 0 1 0-1H7.5V1.5A.5.5 0 0 1 8 1z"/>
-                    </svg>
-                </span>
-                Add Contract
-            </button>
         </div>
 
         <!-- ALERTS -->
@@ -102,7 +92,7 @@
 
         <!-- TABLE -->
         <div id="contractTableWrapper">
-            <jsp:include page="_contracts_table.jsp"/>
+            <jsp:include page="../manager/_contracts_table.jsp"/>
         </div>
 
     </div>
