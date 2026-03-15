@@ -159,6 +159,10 @@
         <servlet-name>AdminUpdateManagerController</servlet-name>
         <servlet-class>Controllers.admin.AdminUpdateManagerController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminUpdateTenantController</servlet-name>
+        <servlet-class>Controllers.admin.AdminUpdateTenantController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ForgotPasswordController</servlet-name>
         <url-pattern>/forgot-password</url-pattern>
@@ -310,5 +314,9 @@
     <servlet-mapping>
         <servlet-name>AdminUpdateManagerController</servlet-name>
         <url-pattern>/admin/accounts/update</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminUpdateTenantController</servlet-name>
+        <url-pattern>/admin/accounts/update-tenant</url-pattern>
     </servlet-mapping>
 </web-app>
