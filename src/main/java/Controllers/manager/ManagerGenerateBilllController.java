@@ -60,11 +60,13 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 
         // VALIDATE METER
         if (newElectric <= oldElectric) {
+            loadRooms(request);
             request.setAttribute("error", "New electric meter must be greater than old meter.");
             request.getRequestDispatcher("/views/manager/generateBill.jsp").forward(request, response);
             return;
         }
         if (newWater <= oldWater) {
+            loadRooms(request);
             request.setAttribute("error", "New water meter must be greater than old meter.");
             request.getRequestDispatcher("/views/manager/generateBill.jsp").forward(request, response);
             return;
