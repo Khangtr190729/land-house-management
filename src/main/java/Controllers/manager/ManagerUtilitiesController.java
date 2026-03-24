@@ -73,13 +73,13 @@ public class ManagerUtilitiesController extends HttpServlet {
                 request.getSession().removeAttribute("successMsg");
                 request.getSession().removeAttribute("errorMsg");
 
-                List<Utility> listU = dao.getManagerUntilities();
+                List<Utility> listU = dao.getManagerUtilities();
                 request.setAttribute("utilities", listU);
                 request.getRequestDispatcher("/views/manager/utilities.jsp").forward(request, response);
                 break;
 
             case "add":
-                List<Utility> listAdd = dao.getManagerUntilities();
+                List<Utility> listAdd = dao.getManagerUtilities();
                 request.setAttribute("utilities", listAdd);
                 request.getRequestDispatcher("/views/manager/utilities.jsp").forward(request, response);
                 break;
@@ -103,7 +103,7 @@ public class ManagerUtilitiesController extends HttpServlet {
             case "edit":
                 int idEdit = Integer.parseInt(request.getParameter("id"));
                 Utility uEdit = dao.getUtilityById(idEdit);
-                List<Utility> listEdit = dao.getManagerUntilities();
+                List<Utility> listEdit = dao.getManagerUtilities();
                 request.setAttribute("utilities", listEdit);
                 request.setAttribute("editUtility", uEdit);
                 request.getRequestDispatcher("/views/manager/utilities.jsp").forward(request, response);
@@ -113,7 +113,7 @@ public class ManagerUtilitiesController extends HttpServlet {
                 int idSub = Integer.parseInt(request.getParameter("id"));
                 String nameSub = request.getParameter("name");
                 List<Utility> subscribers = dao.getSubscribersByUtilityId(idSub);
-                List<Utility> listSub = dao.getManagerUntilities();
+                List<Utility> listSub = dao.getManagerUtilities();
                 request.setAttribute("utilities", listSub);
                 request.setAttribute("subscribers", subscribers);
                 request.setAttribute("utilityName", nameSub);
@@ -191,6 +191,13 @@ public class ManagerUtilitiesController extends HttpServlet {
                     break;
                 }
 
+                //check giá k lớn hơn 10tr
+                if (price.compareTo(new BigDecimal("10000000")) > 0) {
+                    request.getSession().setAttribute("errorMsg", "Price cannot exceed 10,000,000 VND!");
+                    response.sendRedirect(request.getContextPath() + "/manager/utilities");
+                    break;
+                }
+                
                 // Pass hết thì add
                 boolean result = dao.addUtility(utilityName.trim(), price, unit.trim());
                 if (result) {
