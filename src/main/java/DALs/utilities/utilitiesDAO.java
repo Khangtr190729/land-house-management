@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class utilitiesDAO extends DBContext {
 
-    public List<Utility> getManagerUntilities() {
+    public List<Utility> getManagerUtilities() {
         List<Utility> listUntilities = new ArrayList<>();
         String sql = "SELECT utility_id, utility_name, unit, standard_price, is_active, status, created_at, updated_at\n"
                 + "FROM     UTILITY\n"
