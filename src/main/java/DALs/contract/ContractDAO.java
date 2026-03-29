@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import DALs.payment.PaymentDAO;
 import Models.common.ServiceResult;
@@ -22,6 +24,8 @@ import Utils.database.DBContext;
  * @since 2026-02-11
  */
 public class ContractDAO extends DBContext {
+
+    private static final Logger LOGGER = Logger.getLogger(ContractDAO.class.getName());
 
     public int insertPendingContract(Connection conn, Contract c) throws SQLException {
         String sql = """
@@ -54,7 +58,6 @@ public class ContractDAO extends DBContext {
     }
 
     // get list manage contract
-    @SuppressWarnings("CallToPrintStackTrace")
     public List<ManagerContractRowDTO> getManagerContracts() {
         List<ManagerContractRowDTO> list = new ArrayList<>();
 
@@ -79,7 +82,7 @@ public class ContractDAO extends DBContext {
                 list.add(contractRowDTO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error getting manager contracts", e);
         }
 
         return list;
@@ -88,7 +91,6 @@ public class ContractDAO extends DBContext {
     // nếu m có 100 hợp đồng và mỗi trang hiển thị 10 cái,
     // m cần con số 100 này để vẽ ra các nút chuyển trang 1, 2, 3, ..., 10 trên UI.
     // nếu không m sẽ không biết khi nào thì hết dữ liệu để dừng phân trang.
-    @SuppressWarnings("CallToPrintStackTrace")
     public int countManagerContracts(String keyword, String status) {
         String sql = """
                     SELECT COUNT(*)
@@ -129,12 +131,12 @@ public class ContractDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE,
+                    "Error counting manager contracts. keyword=" + keyword + ", status=" + status, e);
         }
         return 0;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public List<ManagerContractRowDTO> findManagerContracts(String keyword, String status, int page, int pageSize) {
         List<ManagerContractRowDTO> list = new ArrayList<>();
 
@@ -198,7 +200,10 @@ public class ContractDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE,
+                    "Error finding manager contracts. keyword=" + keyword
+                            + ", status=" + status + ", page=" + page + ", pageSize=" + pageSize,
+                    e);
         }
 
         return list;
@@ -206,7 +211,6 @@ public class ContractDAO extends DBContext {
 
     // get list contract theo tenantId
     // sort theo status, pending gan 0,active gan 1, uu tien pending len dau
-    @SuppressWarnings("CallToPrintStackTrace")
     public List<Contract> findByTenantId(int tenantId) {
         List<Contract> list = new ArrayList<>();
 
@@ -248,14 +252,13 @@ public class ContractDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error finding contracts by tenantId=" + tenantId, e);
         }
 
         return list;
     }
 
     // get contract theo id de tenant ko xem contract cua ngkhac
-    @SuppressWarnings("CallToPrintStackTrace")
     public Contract findByIdForTenant(int contractId, int tenantId) {
 
         String sql = """
@@ -295,12 +298,12 @@ public class ContractDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE,
+                    "Error finding contract for tenant. contractId=" + contractId + ", tenantId=" + tenantId, e);
         }
         return null;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public Contract findDetailForTenant(int contractId, int tenantId) {
 
         String sql = """
@@ -348,8 +351,9 @@ public class ContractDAO extends DBContext {
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (!rs.next()) {
-                    System.out.println(
-                            "findDetailForTenant => no row, contractId=" + contractId + ", tenantId=" + tenantId);
+                    LOGGER.log(Level.INFO,
+                            "findDetailForTenant => no row, contractId={0}, tenantId={1}",
+                            new Object[] { contractId, tenantId });
                     return null;
                 }
 
@@ -397,12 +401,12 @@ public class ContractDAO extends DBContext {
                 return c;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE,
+                    "Error finding detail for tenant. contractId=" + contractId + ", tenantId=" + tenantId, e);
         }
         return null;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public Contract findDetailForManager(int contractId) {
 
         String sql = """
@@ -496,12 +500,11 @@ public class ContractDAO extends DBContext {
                 return c;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error finding detail for manager. contractId=" + contractId, e);
         }
         return null;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public boolean updateStatus(int contractId, String status) {
         String sql = "UPDATE CONTRACT SET status = ?, updated_at = SYSDATETIME() WHERE contract_id = ?";
 
@@ -510,7 +513,8 @@ public class ContractDAO extends DBContext {
             ps.setInt(2, contractId);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE,
+                    "Error updating contract status. contractId=" + contractId + ", status=" + status, e);
         }
         return false;
     }
@@ -556,7 +560,6 @@ public class ContractDAO extends DBContext {
      * Chạy job expire không throw ra ngoài để tránh làm gãy request. Gọi từ
      * Filter (mỗi X phút).
      */
-    @SuppressWarnings("CallToPrintStackTrace")
     public void runExpireJobSafely() {
         try (Connection conn = new DBContext().getConnection()) {
             conn.setAutoCommit(false);
@@ -566,7 +569,7 @@ public class ContractDAO extends DBContext {
 
             conn.commit();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error running expire job safely", e);
         }
     }
 
@@ -579,7 +582,6 @@ public class ContractDAO extends DBContext {
      * @return true nếu phòng đã có người ở (Busy), false nếu phòng trống
      *         (Available)
      */
-    @SuppressWarnings("CallToPrintStackTrace")
     public boolean existsActiveContractForRoom(int roomId) {
 
         String sql = """
@@ -597,13 +599,12 @@ public class ContractDAO extends DBContext {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error checking active contract for roomId=" + roomId, e);
         }
 
         return false;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public boolean existsActiveContractForTenant(int tenantId) {
         String sql = "SELECT 1 FROM CONTRACT WHERE tenant_id = ? AND status = 'ACTIVE'";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -612,12 +613,11 @@ public class ContractDAO extends DBContext {
                 return rs.next();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error checking active contract for tenantId=" + tenantId, e);
         }
         return false;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public boolean existsPendingContractForTenant(int tenantId) {
         String sql = "SELECT 1 FROM CONTRACT WHERE tenant_id = ? AND status = 'PENDING'";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -626,7 +626,7 @@ public class ContractDAO extends DBContext {
                 return rs.next();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error checking pending contract for tenantId=" + tenantId, e);
         }
         return false;
     }
@@ -634,7 +634,6 @@ public class ContractDAO extends DBContext {
     /**
      * active room id hiện tại của tenant, nếu không có thì trả -1
      */
-    @SuppressWarnings("CallToPrintStackTrace")
     public int getActiveRoomIdOfTenant(int tenantId) {
         String sql = "SELECT TOP 1 room_id FROM CONTRACT WHERE tenant_id = ? AND status = 'ACTIVE' ORDER BY contract_id DESC";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -645,7 +644,7 @@ public class ContractDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error getting active room id of tenantId=" + tenantId, e);
         }
         return -1;
     }
@@ -653,7 +652,6 @@ public class ContractDAO extends DBContext {
     /**
      * active contract id hiện tại của tenant, nếu không có thì -1
      */
-    @SuppressWarnings("CallToPrintStackTrace")
     public int getActiveContractIdOfTenant(int tenantId) {
         String sql = "SELECT TOP 1 contract_id FROM CONTRACT WHERE tenant_id = ? AND status = 'ACTIVE' ORDER BY contract_id DESC";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -664,7 +662,7 @@ public class ContractDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error getting active contract id of tenantId=" + tenantId, e);
         }
         return -1;
     }
@@ -677,7 +675,6 @@ public class ContractDAO extends DBContext {
      * AVAILABLE - recalc TENANT account_status: ACTIVE if has ACTIVE, else
      * PENDING if has PENDING, else ACTIVE
      */
-    @SuppressWarnings("CallToPrintStackTrace")
     public ServiceResult terminateContractByManager(int contractId) {
         String lockSql = """
                     SELECT contract_id, room_id, tenant_id, status
@@ -828,12 +825,11 @@ public class ContractDAO extends DBContext {
             return ServiceResult.ok("OK");
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error terminating contract by manager. contractId=" + contractId, e);
             return ServiceResult.fail("EXCEPTION");
         }
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public TenantMyRoomDTO findActiveMyRoomByTenantId(int tenantId) {
         String sql = """
                     SELECT TOP 1
@@ -871,13 +867,12 @@ public class ContractDAO extends DBContext {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error finding active room by tenantId=" + tenantId, e);
         }
         return null;
     }
 
     // check coi có contract nào đang activce/pending theo roomId
-    @SuppressWarnings("CallToPrintStackTrace")
     public boolean hasBlockingContractByRoomId(int roomId) {
         String sql = """
                     SELECT TOP 1 1
@@ -891,12 +886,11 @@ public class ContractDAO extends DBContext {
                 return rs.next();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error checking blocking contract by roomId=" + roomId, e);
         }
         return true;
     }
 
-    @SuppressWarnings("CallToPrintStackTrace")
     public int ActiveContracts() {
 
         String sql = """
@@ -912,7 +906,7 @@ public class ContractDAO extends DBContext {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Error counting active contracts", e);
         }
 
         return 0;
