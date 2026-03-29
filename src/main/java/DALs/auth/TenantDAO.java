@@ -292,8 +292,8 @@ public class TenantDAO extends DBContext {
         return null;
     }
 
-    public boolean existsPhoneExceptTenant(int tenantId, String phone) {
-        String sql = "SELECT 1 FROM TENANT WHERE phone_number = ? AND tenant_id <> ?";
+    public boolean checkPhoneDuplicateForTenant(int tenantId, String phone) {
+        String sql = "SELECT * FROM TENANT WHERE phone_number = ? AND tenant_id <> ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, phone);
