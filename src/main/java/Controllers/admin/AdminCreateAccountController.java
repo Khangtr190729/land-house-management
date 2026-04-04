@@ -1,7 +1,8 @@
 package Controllers.admin;
 
-import Services.admin.AccountService;
 import java.io.IOException;
+
+import Services.admin.AccountService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,7 +56,7 @@ public class AdminCreateAccountController extends HttpServlet {
             response.sendRedirect(request.getContextPath()
                     + "/admin/accounts?success=Account created successfully.");
 
-        } catch (Exception e) {
+        } catch (IOException | NumberFormatException e) {
 
             request.setAttribute("error", e.getMessage());
             request.getRequestDispatcher("/views/admin/create-account.jsp")
