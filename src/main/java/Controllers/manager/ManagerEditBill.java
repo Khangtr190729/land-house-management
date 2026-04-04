@@ -6,6 +6,7 @@ package Controllers.manager;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
 
 import DALs.Bill.BillDAO;
 import DALs.Bill.PaymentConfirmBillDAO;
@@ -82,7 +83,7 @@ public class ManagerEditBill extends HttpServlet {
             }
 
             // VALIDATE ELECTRIC
-            if (newElectric <= oldElectric) {
+            if (newElectric < oldElectric) {
                 request.setAttribute("error", "New electric meter must be greater than old meter.");
                 request.setAttribute("bill", bill);
                 request.getRequestDispatcher("/views/manager/editBill.jsp")
@@ -90,11 +91,24 @@ public class ManagerEditBill extends HttpServlet {
                 return;
             }
             // VALIDATE WATER
-            if (newWater <= oldWater) {
+            if (newWater < oldWater) {
                 request.setAttribute("error", "New water meter must be greater than old meter.");
                 request.setAttribute("bill", bill);
                 request.getRequestDispatcher("/views/manager/editBill.jsp")
                         .forward(request, response);
+                return;
+            }
+
+            LocalDate billMonthLocal = billMonth.toLocalDate();
+            LocalDate dueDateLocal = dueDate.toLocalDate();
+            LocalDate minDueDate = billMonthLocal.plusMonths(1);
+            LocalDate maxDueDate = billMonthLocal.plusMonths(1).plusDays(14);
+            
+            if (dueDateLocal.isBefore(minDueDate) || dueDateLocal.isAfter(maxDueDate)) {
+                request.setAttribute("error",
+                    "Due date must be between " + minDueDate + " and " + maxDueDate);
+                request.setAttribute("bill", bill);
+                request.getRequestDispatcher("/views/manager/editBill.jsp").forward(request, response);
                 return;
             }
             boolean result = dao.updateBillMeter(billId, billMonth, dueDate, oldElectric, newElectric, oldWater, newWater);
