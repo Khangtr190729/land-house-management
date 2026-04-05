@@ -90,38 +90,6 @@ public class utilitiesDAO extends DBContext {
         return null;
     }
 
-    public List<Utility> getSubscribersByUtilityId(int id) {
-        List<Utility> list = new ArrayList<>();
-        String sql = "SELECT DISTINCT \n"
-                + "    r.room_id,\n"
-                + "    r.room_number,\n"
-                + "    t.full_name,\n"
-                + "	ut.usage_date\n"
-                + "FROM BILL_DETAIL bd\n"
-                + "JOIN BILL b ON bd.bill_id = b.bill_id\n"
-                + "JOIN CONTRACT c ON b.contract_id = c.contract_id\n"
-                + "JOIN ROOM r ON c.room_id = r.room_id\n"
-                + "JOIN TENANT t ON c.tenant_id = t.tenant_id\n"
-                + "JOIN UTILITY_USAGE ut ON c.contract_id = ut.contract_id\n"
-                + "WHERE bd.utility_id = ?;";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Utility u = new Utility();
-                u.setUtilityId(rs.getInt("room_id"));
-                u.setUtilityName(rs.getString("room_number"));
-                u.setUnit(rs.getString("full_name"));
-                u.setStatus(rs.getString("usage_date"));
-                list.add(u);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
     public Boolean deleteUtilities(int id) {
         String sql = "DELETE FROM UTILITY WHERE utility_id = ?";
         try {

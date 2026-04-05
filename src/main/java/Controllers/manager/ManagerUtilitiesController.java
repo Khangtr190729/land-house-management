@@ -1,14 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controllers.manager;
 
 import DALs.utilities.Utilities_UsageDAO;
 import DALs.utilities.utilitiesDAO;
 import Models.entity.Utility;
 import java.io.IOException;
-import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -24,41 +19,6 @@ import java.util.List;
 @WebServlet(name = "ManagerUtilities", urlPatterns = {"/manager/utilities"})
 public class ManagerUtilitiesController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ManagerUtilities</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ManagerUtilities at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -152,14 +112,6 @@ public class ManagerUtilitiesController extends HttpServlet {
         }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -171,7 +123,7 @@ public class ManagerUtilitiesController extends HttpServlet {
         switch (action) {
             case "add":
                 String utilityName = request.getParameter("utilityName");
-                String priceAdd = new String(request.getParameter("price"));
+                String priceAdd = request.getParameter("price");
                 String unit = request.getParameter("unit");
 
                 // Validate rỗng
@@ -199,18 +151,18 @@ public class ManagerUtilitiesController extends HttpServlet {
                 }
 
                 // Validate price
-                BigDecimal price = BigDecimal.ZERO;  // khởi tạo mặc định trước
+                BigDecimal price;
                 try {
                     price = new BigDecimal(priceAdd);
                     if (price.compareTo(BigDecimal.ZERO) < 0) {
                         request.getSession().setAttribute("errorMsg", "Price cannot be negative!");
                         response.sendRedirect(request.getContextPath() + "/manager/utilities");
-                        break;
+                        return;
                     }
                 } catch (NumberFormatException e) {
                     request.getSession().setAttribute("errorMsg", "Invalid price!");
                     response.sendRedirect(request.getContextPath() + "/manager/utilities");
-                    break;
+                    return;
                 }
 
                 // Validate trùng tên
@@ -244,7 +196,7 @@ public class ManagerUtilitiesController extends HttpServlet {
                     request.getSession().setAttribute("errorMsg",
                             "Cannot be deleted! This utility is being used in the invoice.");
                 } else {
-                    Boolean resDelete = dao.deleteUtilities(id);
+                    boolean resDelete = dao.deleteUtilities(id);
                     if (resDelete) {
                         request.getSession().setAttribute("successMsg", "Extension successfully removed!");
                     } else {
@@ -256,21 +208,30 @@ public class ManagerUtilitiesController extends HttpServlet {
 
             case "edit":
                 int idU = Integer.parseInt(request.getParameter("id"));
-                BigDecimal priceU = new BigDecimal(request.getParameter("price"));
-                Boolean resUpdate = dao.updateUtilities(idU, priceU);
+                String priceRaw = request.getParameter("price");
+
+                try {
+                    BigDecimal priceU = new BigDecimal(priceRaw);
+
+                    if (priceU.compareTo(BigDecimal.ZERO) < 0) {
+                        request.getSession().setAttribute("errorMsg", "Price cannot be negative!");
+                        response.sendRedirect(request.getContextPath() + "/manager/utilities?action=edit&id=" + idU);
+                        return;
+                    }
+
+                    boolean updated = dao.updateUtilities(idU, priceU);
+                    if (updated) {
+                        request.getSession().setAttribute("successMsg", "Utility updated successfully!");
+                    } else {
+                        request.getSession().setAttribute("errorMsg", "Failed to update utility!");
+                    }
+                } catch (NumberFormatException e) {
+                    request.getSession().setAttribute("errorMsg", "Invalid price!");
+                }
+
                 response.sendRedirect(request.getContextPath() + "/manager/utilities");
                 break;
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
 
 }
