@@ -25,7 +25,7 @@ public class BillDAO extends DBContext {
     // =========================
     // GET LIST BILL - MANAGER
     // =========================
-    @SuppressWarnings("CallToPrintStackTrace")
+    @SuppressWarnings({"CallToPrintStackTrace", "UseSpecificCatch"})
     public List<ManagerBillRowDTO> getManagerBills(int page, int pageSize) {
         List<ManagerBillRowDTO> listBill = new ArrayList<>();
 
@@ -80,6 +80,7 @@ public class BillDAO extends DBContext {
     // =========================
     // GET BILL DETAIL - MANAGER
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public Bill findBillDetailByIdForManager(int bill_id) {
         String sql = "SELECT *"
                 + "FROM BILL "
@@ -103,7 +104,7 @@ public class BillDAO extends DBContext {
                 return b;
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -112,6 +113,7 @@ public class BillDAO extends DBContext {
     // ==========================================
     // GET ROOM NUMBER BY BILL ID
     // ==========================================
+    @SuppressWarnings("CallToPrintStackTrace")
     public String getStringRoomnumber(int bill_id) {
         String sql = "SELECT ROOM.room_number FROM BILL "
                 + "INNER JOIN CONTRACT ON BILL.contract_id = CONTRACT.contract_id "
@@ -125,7 +127,7 @@ public class BillDAO extends DBContext {
                 return rs.getString("room_number");
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -134,6 +136,7 @@ public class BillDAO extends DBContext {
     // =========================
     // TOTAL AMOUNT - BILL DETAIL
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public BigDecimal totalAmount(int bill_id) {
         String sql = "SELECT ROUND(SUM(unit_price * quantity), 0) AS total_amount "
                 + "FROM BILL_DETAIL "
@@ -145,7 +148,7 @@ public class BillDAO extends DBContext {
             if (rs.next()) {
                 return rs.getBigDecimal(1);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         // return 0 instead of null, advoid NullPointerException
@@ -155,6 +158,7 @@ public class BillDAO extends DBContext {
     // =========================
     //  GET LIST BILL DETAIL (BREAKDOWN UI)
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public List<BillDetail> getListBillDetailByBillId(int bill_id) {
         List<BillDetail> listBillDetail = new ArrayList<>();
         String sql = "SELECT * "
@@ -177,7 +181,7 @@ public class BillDAO extends DBContext {
                 listBillDetail.add(bd);
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return listBillDetail;
@@ -186,6 +190,7 @@ public class BillDAO extends DBContext {
     // =========================
     //  GET QR CODE DATA - BILL DETAIL
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public String getQRFromContractByBillId(int bill_id) {
         String sql = "SELECT c.payment_qr_data "
                 + "FROM BILL b "
@@ -199,7 +204,7 @@ public class BillDAO extends DBContext {
                 return rs.getString("payment_qr_data");
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -218,7 +223,7 @@ public class BillDAO extends DBContext {
             if (rs.next()) {
                 return rs.getInt(1);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
         }
         return 0;
     }
@@ -230,7 +235,6 @@ public class BillDAO extends DBContext {
         if (quantity.compareTo(BigDecimal.ZERO) < 0) {
             throw new SQLException("Quantity cannot be negative");
         }
-        BigDecimal amount = quantity.multiply(unitPrice);
 
         String sql = "INSERT INTO BILL_DETAIL "
                 + "(bill_id, utility_id, item_name, unit, quantity, unit_price, charge_type) "
@@ -318,6 +322,7 @@ public class BillDAO extends DBContext {
     // =========================
     //  LẤY CONTRACT_ID CHO GENERATE BILL
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public int getActiveContractByRoom(int roomId) {
 
         String sql = """
@@ -343,6 +348,7 @@ public class BillDAO extends DBContext {
     // =========================
     //  LẤY Room price CHO from Contract
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public BigDecimal getRoomPrice(int contractId) {
         String sql = """
                         SELECT monthly_rent
@@ -367,6 +373,7 @@ public class BillDAO extends DBContext {
     // =========================
     //  get Utility By Name
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public Utility getUtilityByName(String nameUtilities) {
         String sql = """
                         SELECT *
@@ -399,6 +406,7 @@ public class BillDAO extends DBContext {
     // ==========================================
     // SYNC UTILITY USAGE TO BILL DETAIL
     // ==========================================
+    @SuppressWarnings("CallToPrintStackTrace")
     public void insertUtilityUsageToBill(int billId, int contractId, Date billMonth) throws SQLException {
 
         String sql = """
@@ -428,7 +436,7 @@ public class BillDAO extends DBContext {
                         "UTILITY"
                 );
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -436,6 +444,7 @@ public class BillDAO extends DBContext {
     // ==========================================
     // MASTER PROCESS: GENERATE FULL MONTHLY BILL
     // ==========================================
+    @SuppressWarnings("UseSpecificCatch")
     public int generateBill(int roomId, Date billMonth, Date dueDate, int oldE, int newE, int oldW, int newW) throws SQLException {
         int contractId = getActiveContractByRoom(roomId);
         if (contractId == -1) {
@@ -485,6 +494,7 @@ public class BillDAO extends DBContext {
         }
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
    public boolean updateBillMeter(int billId, Date billMonth, Date dueDate,
         int oldElectric, int newElectric, int oldWater, int newWater) {
 
@@ -550,18 +560,8 @@ public class BillDAO extends DBContext {
         connection.commit();
         return true;
 
-    } catch (Exception e) {
-        try {
-            connection.rollback();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    } catch (SQLException e) {
         e.printStackTrace();
-    } finally {
-        try {
-            connection.setAutoCommit(true);
-        } catch (Exception e) {
-        }
     }
 
     return false;
@@ -573,14 +573,14 @@ public class BillDAO extends DBContext {
     public boolean isBillExist(int roomId, int month, int year) throws SQLException {
 
         String sql = """
-        SELECT 1
-        FROM BILL b
-        JOIN CONTRACT c ON b.contract_id = c.contract_id
-        WHERE c.room_id = ?
-        AND MONTH(b.bill_month) = ?
-        AND YEAR(b.bill_month) = ?
-        AND b.status != 'CANCELLED'
-    """;
+                SELECT 1
+                FROM BILL b
+                JOIN CONTRACT c ON b.contract_id = c.contract_id
+                WHERE c.room_id = ?
+                AND MONTH(b.bill_month) = ?
+                AND YEAR(b.bill_month) = ?
+                AND b.status != 'CANCELLED'
+            """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -596,6 +596,7 @@ public class BillDAO extends DBContext {
     // =========================
     // get Bill detail current for tenant
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public Bill getCurrentBillForTenant(int tenant_id) {
         String sql = "SELECT TOP 1 b.* "
                 + "FROM BILL b "
@@ -622,7 +623,7 @@ public class BillDAO extends DBContext {
                 return b;
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -631,6 +632,7 @@ public class BillDAO extends DBContext {
     // =========================
     // get total tenant unpaid
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public BigDecimal getTotalTenantUnpaid(int tenant_id) {
         String sql = """
                     SELECT SUM(d.unit_price * d.quantity) AS total_unpaid
@@ -652,7 +654,7 @@ public class BillDAO extends DBContext {
             if (rs.next() && rs.getBigDecimal(1) != null) {
                 return rs.getBigDecimal(1);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return BigDecimal.ZERO;
@@ -661,6 +663,7 @@ public class BillDAO extends DBContext {
     // =========================
     // GET LASTPAYMENT
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public Payment getLastPaidAmountByTenant(int tenant_id) {
         String sql = """
                         SELECT TOP 1 P.*
@@ -691,7 +694,7 @@ public class BillDAO extends DBContext {
                 return p;
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
@@ -700,6 +703,7 @@ public class BillDAO extends DBContext {
     // =========================
     // GET Room Number By TenantId
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public String getRoomNumberByTenantId(int tenant_id) {
         String sql = "SELECT R.room_number "
                 + "FROM CONTRACT C "
@@ -712,7 +716,7 @@ public class BillDAO extends DBContext {
             if (rs.next()) {
                 return rs.getString("room_number");
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return "No Room";
@@ -721,15 +725,16 @@ public class BillDAO extends DBContext {
     // =========================
     // GET Bill Detail By Id For Tenant
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public Bill findBillDetailByIdForTenant(int billId, int tenantId) {
         String sql = """
-        SELECT b.*
-        FROM BILL b
-        JOIN CONTRACT c ON b.contract_id = c.contract_id
-        WHERE b.bill_id = ?
-          AND c.tenant_id = ?
-          AND c.status = 'ACTIVE'
-    """;
+                        SELECT b.*
+                        FROM BILL b
+                        JOIN CONTRACT c ON b.contract_id = c.contract_id
+                        WHERE b.bill_id = ?
+                        AND c.tenant_id = ?
+                        AND c.status = 'ACTIVE'
+                    """;
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -752,7 +757,7 @@ public class BillDAO extends DBContext {
                 b.setNewWaterNumber(rs.getInt("new_water_number"));
                 return b;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -762,6 +767,7 @@ public class BillDAO extends DBContext {
     // =========================
     // GET List Bill For Tenant
     // =========================
+    @SuppressWarnings("CallToPrintStackTrace")
     public List<ManagerBillRowDTO> listBillForTenant(int tenant_id) {
         List<ManagerBillRowDTO> list = new ArrayList<>();
         String sql = """
@@ -806,22 +812,23 @@ public class BillDAO extends DBContext {
     // ==========================================
     // GET OCCUPIED ROOMS WITH LAST METER READS
     // ==========================================
+    @SuppressWarnings("CallToPrintStackTrace")
     public List<RoomTenantDTO> getRoomsWithTenant() {
         List<RoomTenantDTO> list = new ArrayList<>();
         String sql = """
-                    SELECT r.room_id, r.room_number, t.full_name, c.contract_id, c.monthly_rent,
-                        ISNULL(last_bill.new_electric_number, 0) AS last_electric,
-                        ISNULL(last_bill.new_water_number, 0)    AS last_water
+                    SELECT
+                        r.room_id,
+                        r.room_number,
+                        t.full_name,
+                        c.contract_id,
+                        c.monthly_rent,
+                        r.electricity_index AS last_electric,
+                        r.water_index AS last_water
                     FROM ROOM r
                     JOIN CONTRACT c ON r.room_id = c.room_id
                     JOIN TENANT t   ON t.tenant_id = c.tenant_id
-                    OUTER APPLY (
-                        SELECT TOP 1 new_electric_number, new_water_number
-                        FROM BILL
-                        WHERE contract_id = c.contract_id AND status != 'CANCELLED'
-                        ORDER BY bill_month DESC
-                    ) AS last_bill
-                    WHERE c.status = 'ACTIVE' AND r.status = 'OCCUPIED'
+                    WHERE c.status = 'ACTIVE'
+                    AND r.status = 'OCCUPIED'
                 """;
         try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
 
@@ -847,6 +854,7 @@ public class BillDAO extends DBContext {
     // ==========================================
     // get startdate and end_date cua contract = roomid
     // ==========================================
+    @SuppressWarnings("CallToPrintStackTrace")
     public RoomTenantDTO getContractDatesByRoomId(int roomId) {
         String sql = """
         SELECT c.start_date, c.end_date
@@ -871,4 +879,42 @@ public class BillDAO extends DBContext {
         return null;
     }
 
+    // ==========================================
+    // Update room index every month => generate bill khi có roomId
+    // ==========================================
+    @SuppressWarnings("CallToPrintStackTrace")
+    public void updateRoomMeter(int roomId, int electric, int water) {
+        String sql = "UPDATE ROOM SET electricity_index = ?, water_index = ? WHERE room_id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, electric);
+            ps.setInt(2, water);
+            ps.setInt(3, roomId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // ==========================================
+    // Update room index every month => edit bill khi co billId
+    // ==========================================
+    @SuppressWarnings("CallToPrintStackTrace")
+    public void updateRoomMeterByBillId(int billId, int electric, int water) {
+        String sql = """
+                UPDATE r
+                SET r.electricity_index = ?, r.water_index = ?
+                FROM ROOM r
+                JOIN CONTRACT c ON r.room_id = c.room_id
+                JOIN BILL b ON b.contract_id = c.contract_id
+                WHERE b.bill_id = ?
+                """;
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, electric);
+            ps.setInt(2, water);
+            ps.setInt(3, billId);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
