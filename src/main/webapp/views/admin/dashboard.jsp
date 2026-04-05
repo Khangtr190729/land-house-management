@@ -149,60 +149,44 @@
                 </div>
             </div>
 
-            <!-- Monthly Revenue -->
-            <div class="dashboard-card card-monthly revenue-card reveal-up" data-delay="400">
+            <!-- Revenue Report -->
+            <div class="dashboard-card card-total revenue-card reveal-up" data-delay="400">
                 <div class="card-blur"></div>
                 <div class="card-shine"></div>
                 <div class="card-top-line"></div>
 
-                <div class="card-header">
+                <div class="card-header revenue-header">
                     <div>
-                        <span class="card-label">Monthly Revenue</span>
-                        <small>This month's income</small>
+                        <span class="card-label">Revenue Report</span>
+                        <small>
+                            <c:choose>
+                                <c:when test="${range == 'month'}">This month</c:when>
+                                <c:when test="${range == '3months'}">Last 3 months</c:when>
+                                <c:when test="${range == '6months'}">Last 6 months</c:when>
+                                <c:when test="${range == '1year'}">Last 1 year</c:when>
+                                <c:otherwise>This month</c:otherwise>
+                            </c:choose>
+                        </small>
                     </div>
-                    <div class="card-icon">
-                        <i class="bi bi-currency-dollar"></i>
+
+                    <div class="revenue-filter">
+                       <form method="get" action="${pageContext.request.contextPath}/admin/home">
+                            <select name="range" onchange="this.form.submit()">
+                                <option value="month" ${range == 'month' ? 'selected' : ''}>1 month</option>
+                                <option value="3months" ${range == '3months' ? 'selected' : ''}>3 months</option>
+                                <option value="6months" ${range == '6months' ? 'selected' : ''}>6 months</option>
+                                <option value="1year" ${range == '1year' ? 'selected' : ''}>1 year</option>
+                            </select>
+                        </form>
                     </div>
                 </div>
 
                 <div class="card-value">
                     <h3 class="counter currency"
-                        data-value="${monthlyRevenue}"
-                        data-suffix=" đ"
-                        data-duration="1900">
-                        <fmt:formatNumber value="${monthlyRevenue}" type="number"/> đ
-                    </h3>
-                </div>
-
-                <div class="card-chart">
-                    <svg class="sparkline spark-pink" viewBox="0 0 100 36" preserveAspectRatio="none">
-                        <polyline points="0,30 10,28 20,24 30,22 40,19 50,16 60,15 70,12 80,10 90,7 100,4"></polyline>
-                    </svg>
-                </div>
-            </div>
-
-            <!-- Total Revenue -->
-            <div class="dashboard-card card-total revenue-card reveal-up" data-delay="480">
-                <div class="card-blur"></div>
-                <div class="card-shine"></div>
-                <div class="card-top-line"></div>
-
-                <div class="card-header">
-                    <div>
-                        <span class="card-label">Total Revenue</span>
-                        <small>All-time revenue</small>
-                    </div>
-                    <div class="card-icon">
-                        <i class="bi bi-graph-up"></i>
-                    </div>
-                </div>
-
-                <div class="card-value">
-                    <h3 class="counter currency"
-                        data-value="${totalRevenue}"
+                        data-value="${revenue}"
                         data-suffix=" đ"
                         data-duration="2100">
-                        <fmt:formatNumber value="${totalRevenue}" type="number"/> đ
+                        <fmt:formatNumber value="${revenue}" type="number" groupingUsed="true"/> đ
                     </h3>
                 </div>
 
@@ -212,6 +196,8 @@
                     </svg>
                 </div>
             </div>
+                        
+                        
 
         </div>
     </div>
