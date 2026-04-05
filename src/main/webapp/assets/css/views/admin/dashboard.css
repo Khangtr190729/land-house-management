@@ -37,16 +37,12 @@
   overflow: hidden;
   background:
     radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.13), transparent 28%),
-    radial-gradient(
-      circle at 100% 12%,
+    radial-gradient(circle at 100% 12%,
       rgba(139, 92, 246, 0.12),
-      transparent 28%
-    ),
-    radial-gradient(
-      circle at 50% 100%,
+      transparent 28%),
+    radial-gradient(circle at 50% 100%,
       rgba(6, 182, 212, 0.1),
-      transparent 25%
-    ),
+      transparent 25%),
     linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
 }
 
@@ -71,11 +67,9 @@
   left: -50px;
   width: 260px;
   height: 260px;
-  background: radial-gradient(
-    circle,
-    rgba(59, 130, 246, 0.35),
-    rgba(59, 130, 246, 0.02)
-  );
+  background: radial-gradient(circle,
+      rgba(59, 130, 246, 0.35),
+      rgba(59, 130, 246, 0.02));
 }
 
 .orb-2 {
@@ -83,11 +77,9 @@
   right: -120px;
   width: 340px;
   height: 340px;
-  background: radial-gradient(
-    circle,
-    rgba(139, 92, 246, 0.28),
-    rgba(139, 92, 246, 0.02)
-  );
+  background: radial-gradient(circle,
+      rgba(139, 92, 246, 0.28),
+      rgba(139, 92, 246, 0.02));
   animation-delay: 1.8s;
 }
 
@@ -96,11 +88,9 @@
   left: 35%;
   width: 280px;
   height: 280px;
-  background: radial-gradient(
-    circle,
-    rgba(6, 182, 212, 0.25),
-    rgba(6, 182, 212, 0.02)
-  );
+  background: radial-gradient(circle,
+      rgba(6, 182, 212, 0.25),
+      rgba(6, 182, 212, 0.02));
   animation-delay: 3s;
 }
 
@@ -199,12 +189,10 @@
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.95),
-    rgba(255, 255, 255, 0.15),
-    rgba(255, 255, 255, 0.85)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.95),
+      rgba(255, 255, 255, 0.15),
+      rgba(255, 255, 255, 0.85));
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
@@ -237,12 +225,10 @@
   width: 46%;
   height: 180%;
   transform: rotate(20deg);
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.62),
-    transparent
-  );
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.62),
+      transparent);
   transition: left 0.85s ease;
   z-index: 2;
   pointer-events: none;
@@ -359,18 +345,23 @@
 .spark-blue polyline {
   stroke: var(--blue);
 }
+
 .spark-green polyline {
   stroke: var(--green);
 }
+
 .spark-amber polyline {
   stroke: var(--amber);
 }
+
 .spark-purple polyline {
   stroke: var(--purple);
 }
+
 .spark-pink polyline {
   stroke: var(--pink);
 }
+
 .spark-dark polyline {
   stroke: var(--dark2);
 }
@@ -379,6 +370,7 @@
 .card-tenants .card-icon {
   background: linear-gradient(135deg, var(--blue), var(--cyan));
 }
+
 .card-tenants .card-blur,
 .card-tenants .card-top-line {
   background: linear-gradient(90deg, var(--blue), var(--cyan));
@@ -387,6 +379,7 @@
 .card-rooms .card-icon {
   background: linear-gradient(135deg, var(--green), var(--lime));
 }
+
 .card-rooms .card-blur,
 .card-rooms .card-top-line {
   background: linear-gradient(90deg, var(--green), var(--lime));
@@ -395,6 +388,7 @@
 .card-maintenance .card-icon {
   background: linear-gradient(135deg, var(--amber), var(--orange));
 }
+
 .card-maintenance .card-blur,
 .card-maintenance .card-top-line {
   background: linear-gradient(90deg, var(--amber), var(--orange));
@@ -403,6 +397,7 @@
 .card-occupied .card-icon {
   background: linear-gradient(135deg, var(--purple), var(--indigo));
 }
+
 .card-occupied .card-blur,
 .card-occupied .card-top-line {
   background: linear-gradient(90deg, var(--purple), var(--indigo));
@@ -411,6 +406,7 @@
 .card-monthly .card-icon {
   background: linear-gradient(135deg, var(--pink), var(--rose));
 }
+
 .card-monthly .card-blur,
 .card-monthly .card-top-line {
   background: linear-gradient(90deg, var(--pink), var(--rose));
@@ -419,6 +415,7 @@
 .card-total .card-icon {
   background: linear-gradient(135deg, var(--dark1), var(--dark2));
 }
+
 .card-total .card-blur,
 .card-total .card-top-line {
   background: linear-gradient(90deg, var(--dark1), var(--dark2));
@@ -455,27 +452,33 @@
 
 /* Keyframes */
 @keyframes floatOrb {
+
   0%,
   100% {
     transform: translate(0, 0) scale(1);
   }
+
   25% {
     transform: translate(12px, -16px) scale(1.04);
   }
+
   50% {
     transform: translate(-10px, 12px) scale(0.98);
   }
+
   75% {
     transform: translate(8px, -8px) scale(1.02);
   }
 }
 
 @keyframes badgePulse {
+
   0%,
   100% {
     transform: translateY(0) scale(1);
     box-shadow: 0 10px 22px rgba(59, 130, 246, 0.1);
   }
+
   50% {
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 16px 28px rgba(59, 130, 246, 0.16);
@@ -483,10 +486,12 @@
 }
 
 @keyframes iconFloat {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-3px);
   }
@@ -499,10 +504,12 @@
 }
 
 @keyframes pulseLine {
+
   0%,
   100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-1px);
   }
@@ -512,6 +519,7 @@
   0% {
     transform: translateX(-12%);
   }
+
   100% {
     transform: translateX(12%);
   }
@@ -521,9 +529,11 @@
   0% {
     box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6);
   }
+
   70% {
     box-shadow: 0 0 0 14px rgba(249, 115, 22, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
   }
@@ -566,6 +576,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -577,4 +588,52 @@
     opacity: 1 !important;
     transform: none !important;
   }
+}
+
+.revenue-filter select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  padding: 8px 36px 8px 12px;
+  border-radius: 10px;
+  border: 1px solid #e0e3eb;
+
+  background: #ffffff;
+  color: #1f2a44;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+/* hover nhẹ */
+.revenue-filter select:hover {
+  border-color: #4f7cff;
+}
+
+/* focus (click vào) */
+.revenue-filter select:focus {
+  border-color: #4f7cff;
+  box-shadow: 0 0 0 3px rgba(79, 124, 255, 0.15);
+}
+
+/* icon mũi tên */
+.revenue-filter {
+  position: relative;
+}
+
+.revenue-filter::after {
+  content: "▾";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: #6b7280;
+  pointer-events: none;
 }

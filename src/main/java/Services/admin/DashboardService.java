@@ -34,10 +34,19 @@ public class DashboardService {
         return paymentDAO.getMonthlyRevenue();
     }
 
-    public double getTotalRevenue() {
-        return paymentDAO.getTotalRevenue();
-    }
-    public int getActiveContracts(){
+    public int getActiveContracts() {
         return contractDAO.ActiveContracts();
+    }
+
+    public double getRevenueLast3Months() {
+        return paymentDAO.getRevenueLast3Months();
+    }
+
+    public double getRevenueLast6Months() {
+        return paymentDAO.getRevenueLast6Months();
+    }
+
+    public double getRevenueLast1Year() {
+        return paymentDAO.getRevenueLast1Year();
     }
 }
