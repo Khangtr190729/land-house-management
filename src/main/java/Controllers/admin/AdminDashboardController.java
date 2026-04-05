@@ -1,12 +1,17 @@
 package Controllers.admin;
 
 import java.io.IOException;
+import java.util.List;
+
+import Models.entity.Bill;
+import Models.entity.Utility;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import Services.admin.DashboardService;
-
+// Nguyen Huu Lap
+// Admin DashBoard
 public class AdminDashboardController extends HttpServlet {
 
     private final DashboardService service = new DashboardService();
@@ -20,6 +25,8 @@ public class AdminDashboardController extends HttpServlet {
         int maintenanceRequests = service.getMaintenanceRequests();
         int occupiedRooms = service.getOccupiedRooms();
         int activeContracts = service.getActiveContracts();
+        final List<Bill> latestBills = service.getLatest10Bills();
+        List<Utility> utilities = service.getListUtilities();
 
         String range = request.getParameter("range");
         double revenue;
@@ -42,6 +49,8 @@ public class AdminDashboardController extends HttpServlet {
         request.setAttribute("activeContracts", activeContracts);
         request.setAttribute("revenue", revenue);
         request.setAttribute("range", range);
+        request.setAttribute("latestBills", latestBills);
+        request.setAttribute("utilities", utilities);
 
         request.getRequestDispatcher("/views/admin/dashboard.jsp")
                 .forward(request, response);

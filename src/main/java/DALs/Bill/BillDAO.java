@@ -25,7 +25,7 @@ public class BillDAO extends DBContext {
     // =========================
     // GET LIST BILL - MANAGER
     // =========================
-    @SuppressWarnings({"CallToPrintStackTrace", "UseSpecificCatch"})
+    @SuppressWarnings({ "CallToPrintStackTrace", "UseSpecificCatch" })
     public List<ManagerBillRowDTO> getManagerBills(int page, int pageSize) {
         List<ManagerBillRowDTO> listBill = new ArrayList<>();
 
@@ -156,7 +156,7 @@ public class BillDAO extends DBContext {
     }
 
     // =========================
-    //  GET LIST BILL DETAIL (BREAKDOWN UI)
+    // GET LIST BILL DETAIL (BREAKDOWN UI)
     // =========================
     @SuppressWarnings("CallToPrintStackTrace")
     public List<BillDetail> getListBillDetailByBillId(int bill_id) {
@@ -188,7 +188,7 @@ public class BillDAO extends DBContext {
     }
 
     // =========================
-    //  GET QR CODE DATA - BILL DETAIL
+    // GET QR CODE DATA - BILL DETAIL
     // =========================
     @SuppressWarnings("CallToPrintStackTrace")
     public String getQRFromContractByBillId(int bill_id) {
@@ -231,7 +231,8 @@ public class BillDAO extends DBContext {
     // =========================
     // insert bill detail()
     // =========================
-    public void insertBillDetail(int billId, Integer utilityId, String itemName, String unit, BigDecimal quantity, BigDecimal unitPrice, String type) throws SQLException {
+    public void insertBillDetail(int billId, Integer utilityId, String itemName, String unit, BigDecimal quantity,
+            BigDecimal unitPrice, String type) throws SQLException {
         if (quantity.compareTo(BigDecimal.ZERO) < 0) {
             throw new SQLException("Quantity cannot be negative");
         }
@@ -278,13 +279,13 @@ public class BillDAO extends DBContext {
         }
 
         String sql = """
-            INSERT INTO BILL (
-                contract_id, bill_month, due_date, [status], note,
-                old_electric_number, new_electric_number,
-                old_water_number, new_water_number
-            )
-            VALUES (?, ?, ?, 'UNPAID', ?, ?, ?, ?, ?)
-        """;
+                    INSERT INTO BILL (
+                        contract_id, bill_month, due_date, [status], note,
+                        old_electric_number, new_electric_number,
+                        old_water_number, new_water_number
+                    )
+                    VALUES (?, ?, ?, 'UNPAID', ?, ?, ?, ?, ?)
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
 
@@ -294,10 +295,9 @@ public class BillDAO extends DBContext {
 
             ps.setString(4,
                     "Bill "
-                    + billMonthDate.toLocalDate().getMonthValue()
-                    + "/"
-                    + billMonthDate.toLocalDate().getYear()
-            );
+                            + billMonthDate.toLocalDate().getMonthValue()
+                            + "/"
+                            + billMonthDate.toLocalDate().getYear());
 
             ps.setInt(5, oldE);
             ps.setInt(6, newE);
@@ -320,17 +320,17 @@ public class BillDAO extends DBContext {
     }
 
     // =========================
-    //  LẤY CONTRACT_ID CHO GENERATE BILL
+    // LẤY CONTRACT_ID CHO GENERATE BILL
     // =========================
     @SuppressWarnings("CallToPrintStackTrace")
     public int getActiveContractByRoom(int roomId) {
 
         String sql = """
-                        SELECT contract_id
-                        FROM CONTRACT
-                        WHERE room_id = ?
-                        AND status = 'ACTIVE'
-                    """;
+                    SELECT contract_id
+                    FROM CONTRACT
+                    WHERE room_id = ?
+                    AND status = 'ACTIVE'
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, roomId);
@@ -346,15 +346,15 @@ public class BillDAO extends DBContext {
     }
 
     // =========================
-    //  LẤY Room price CHO from Contract
+    // LẤY Room price CHO from Contract
     // =========================
     @SuppressWarnings("CallToPrintStackTrace")
     public BigDecimal getRoomPrice(int contractId) {
         String sql = """
-                        SELECT monthly_rent
-                        FROM CONTRACT 
-                        WHERE contract_id = ?
-                    """;
+                    SELECT monthly_rent
+                    FROM CONTRACT
+                    WHERE contract_id = ?
+                """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, contractId);
             ResultSet rs = ps.executeQuery();
@@ -371,15 +371,15 @@ public class BillDAO extends DBContext {
     }
 
     // =========================
-    //  get Utility By Name
+    // get Utility By Name
     // =========================
     @SuppressWarnings("CallToPrintStackTrace")
     public Utility getUtilityByName(String nameUtilities) {
         String sql = """
-                        SELECT *
-                        FROM UTILITY
-                        WHERE utility_name = ?
-                    """;
+                    SELECT *
+                    FROM UTILITY
+                    WHERE utility_name = ?
+                """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, nameUtilities);
             ResultSet rs = ps.executeQuery();
@@ -410,15 +410,15 @@ public class BillDAO extends DBContext {
     public void insertUtilityUsageToBill(int billId, int contractId, Date billMonth) throws SQLException {
 
         String sql = """
-                        SELECT u.utility_id, u.utility_name, u.unit, u.standard_price,
-                            SUM(uu.quantity) total
-                        FROM UTILITY_USAGE uu
-                        JOIN UTILITY u ON uu.utility_id = u.utility_id
-                        WHERE uu.contract_id = ?
-                        AND MONTH(uu.usage_date) = MONTH(?)
-                        AND YEAR(uu.usage_date) = YEAR(?)
-                        GROUP BY u.utility_id, u.utility_name, u.unit, u.standard_price
-                    """;
+                    SELECT u.utility_id, u.utility_name, u.unit, u.standard_price,
+                        SUM(uu.quantity) total
+                    FROM UTILITY_USAGE uu
+                    JOIN UTILITY u ON uu.utility_id = u.utility_id
+                    WHERE uu.contract_id = ?
+                    AND MONTH(uu.usage_date) = MONTH(?)
+                    AND YEAR(uu.usage_date) = YEAR(?)
+                    GROUP BY u.utility_id, u.utility_name, u.unit, u.standard_price
+                """;
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, contractId);
@@ -433,8 +433,7 @@ public class BillDAO extends DBContext {
                         rs.getString("unit"),
                         rs.getBigDecimal("total"),
                         rs.getBigDecimal("standard_price"),
-                        "UTILITY"
-                );
+                        "UTILITY");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -445,7 +444,8 @@ public class BillDAO extends DBContext {
     // MASTER PROCESS: GENERATE FULL MONTHLY BILL
     // ==========================================
     @SuppressWarnings("UseSpecificCatch")
-    public int generateBill(int roomId, Date billMonth, Date dueDate, int oldE, int newE, int oldW, int newW) throws SQLException {
+    public int generateBill(int roomId, Date billMonth, Date dueDate, int oldE, int newE, int oldW, int newW)
+            throws SQLException {
         int contractId = getActiveContractByRoom(roomId);
         if (contractId == -1) {
             throw new SQLException("No active contract");
@@ -463,25 +463,29 @@ public class BillDAO extends DBContext {
             int month = billMonth.toLocalDate().getMonthValue();
             int year = billMonth.toLocalDate().getYear();
             // RENT
-            insertBillDetail(billId, null, "Room Rent " + month + "/" + year, "month", BigDecimal.ONE, roomPrice, "RENT");
-            //INTERNET
+            insertBillDetail(billId, null, "Room Rent " + month + "/" + year, "month", BigDecimal.ONE, roomPrice,
+                    "RENT");
+            // INTERNET
             if (wifi != null) {
-                insertBillDetail(billId, wifi.getUtilityId(), wifi.getUtilityName() + " " + month + "/" + year, wifi.getUnit(), BigDecimal.ONE, wifi.getStandardPrice(), "UTILITY");
+                insertBillDetail(billId, wifi.getUtilityId(), wifi.getUtilityName() + " " + month + "/" + year,
+                        wifi.getUnit(), BigDecimal.ONE, wifi.getStandardPrice(), "UTILITY");
             }
 
-            //ELECTRIC
+            // ELECTRIC
             int electricUsage = newE - oldE;
             if (electric != null && electricUsage > 0) {
-                insertBillDetail(billId, electric.getUtilityId(), electric.getUtilityName() + " " + month + "/" + year, electric.getUnit(), BigDecimal.valueOf(electricUsage), electric.getStandardPrice(), "UTILITY");
+                insertBillDetail(billId, electric.getUtilityId(), electric.getUtilityName() + " " + month + "/" + year,
+                        electric.getUnit(), BigDecimal.valueOf(electricUsage), electric.getStandardPrice(), "UTILITY");
             }
 
             // WATER
             int waterUsage = newW - oldW;
             if (water != null && waterUsage > 0) {
-                insertBillDetail(billId, water.getUtilityId(), water.getUtilityName() + " " + month + "/" + year, water.getUnit(), BigDecimal.valueOf(waterUsage), water.getStandardPrice(), "UTILITY");
+                insertBillDetail(billId, water.getUtilityId(), water.getUtilityName() + " " + month + "/" + year,
+                        water.getUnit(), BigDecimal.valueOf(waterUsage), water.getStandardPrice(), "UTILITY");
             }
 
-            //UTILITY
+            // UTILITY
             insertUtilityUsageToBill(billId, contractId, billMonth);
 
             connection.commit();
@@ -495,77 +499,79 @@ public class BillDAO extends DBContext {
     }
 
     @SuppressWarnings("CallToPrintStackTrace")
-   public boolean updateBillMeter(int billId, Date billMonth, Date dueDate,
-        int oldElectric, int newElectric, int oldWater, int newWater) {
+    public boolean updateBillMeter(int billId, Date billMonth, Date dueDate,
+            int oldElectric, int newElectric, int oldWater, int newWater) {
 
-    try {
-        connection.setAutoCommit(false);
+        try {
+            connection.setAutoCommit(false);
 
-        // Update BILL
-        String sql = """
-        UPDATE BILL
-        SET bill_month = ?, due_date = ?,
-            old_electric_number = ?, new_electric_number = ?,
-            old_water_number = ?, new_water_number = ?
-        WHERE bill_id = ?
-        """;
+            // Update BILL
+            String sql = """
+                    UPDATE BILL
+                    SET bill_month = ?, due_date = ?,
+                        old_electric_number = ?, new_electric_number = ?,
+                        old_water_number = ?, new_water_number = ?
+                    WHERE bill_id = ?
+                    """;
 
-        PreparedStatement ps = connection.prepareStatement(sql);
-        ps.setDate(1, billMonth);
-        ps.setDate(2, dueDate);
-        ps.setInt(3, oldElectric);
-        ps.setInt(4, newElectric);
-        ps.setInt(5, oldWater);
-        ps.setInt(6, newWater);
-        ps.setInt(7, billId);
-        ps.executeUpdate();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setDate(1, billMonth);
+            ps.setDate(2, dueDate);
+            ps.setInt(3, oldElectric);
+            ps.setInt(4, newElectric);
+            ps.setInt(5, oldWater);
+            ps.setInt(6, newWater);
+            ps.setInt(7, billId);
+            ps.executeUpdate();
 
-        // Lấy utility trước
-        Utility electric = getUtilityByName("Electric");
-        Utility water = getUtilityByName("Water");
+            // Lấy utility trước
+            Utility electric = getUtilityByName("Electric");
+            Utility water = getUtilityByName("Water");
 
-        //  XÓA đúng điện + nước cũ
-        String deleteSql = "DELETE FROM BILL_DETAIL WHERE bill_id = ? AND utility_id = ?";
-        PreparedStatement psDel = connection.prepareStatement(deleteSql);
+            // XÓA đúng điện + nước cũ
+            String deleteSql = "DELETE FROM BILL_DETAIL WHERE bill_id = ? AND utility_id = ?";
+            PreparedStatement psDel = connection.prepareStatement(deleteSql);
 
-        if (electric != null) {
-            psDel.setInt(1, billId);
-            psDel.setInt(2, electric.getUtilityId());
-            psDel.executeUpdate();
+            if (electric != null) {
+                psDel.setInt(1, billId);
+                psDel.setInt(2, electric.getUtilityId());
+                psDel.executeUpdate();
+            }
+
+            if (water != null) {
+                psDel.setInt(1, billId);
+                psDel.setInt(2, water.getUtilityId());
+                psDel.executeUpdate();
+            }
+
+            int month = billMonth.toLocalDate().getMonthValue();
+            int year = billMonth.toLocalDate().getYear();
+
+            // 4. Tính usage
+            int electricUsage = newElectric - oldElectric;
+            int waterUsage = newWater - oldWater;
+
+            // Insert lại ELECTRIC
+            if (electric != null && electricUsage > 0) {
+                insertBillDetail(billId, electric.getUtilityId(), "Electric " + month + "/" + year, electric.getUnit(),
+                        BigDecimal.valueOf(electricUsage), electric.getStandardPrice(), "UTILITY");
+            }
+
+            // Insert lại WATER
+            if (water != null && waterUsage > 0) {
+                insertBillDetail(billId, water.getUtilityId(), "Water " + month + "/" + year, water.getUnit(),
+                        BigDecimal.valueOf(waterUsage), water.getStandardPrice(), "UTILITY");
+            }
+
+            connection.commit();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        if (water != null) {
-            psDel.setInt(1, billId);
-            psDel.setInt(2, water.getUtilityId());
-            psDel.executeUpdate();
-        }
-
-        int month = billMonth.toLocalDate().getMonthValue();
-        int year = billMonth.toLocalDate().getYear();
-
-        // 4. Tính usage
-        int electricUsage = newElectric - oldElectric;
-        int waterUsage = newWater - oldWater;
-
-        //  Insert lại ELECTRIC
-        if (electric != null && electricUsage > 0) {
-            insertBillDetail( billId, electric.getUtilityId(), "Electric " + month + "/" + year, electric.getUnit(), BigDecimal.valueOf(electricUsage),  electric.getStandardPrice(), "UTILITY");
-        }
-
-        // Insert lại WATER
-        if (water != null && waterUsage > 0) {
-            insertBillDetail(billId, water.getUtilityId(), "Water " + month + "/" + year, water.getUnit(), BigDecimal.valueOf(waterUsage), water.getStandardPrice(),"UTILITY" );
-        }
-
-        connection.commit();
-        return true;
-
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return false;
     }
-
-    return false;
-}
 
     // ==========================================
     // CHECK IF BILL ALREADY EXISTS FOR MONTH
@@ -573,14 +579,14 @@ public class BillDAO extends DBContext {
     public boolean isBillExist(int roomId, int month, int year) throws SQLException {
 
         String sql = """
-                SELECT 1
-                FROM BILL b
-                JOIN CONTRACT c ON b.contract_id = c.contract_id
-                WHERE c.room_id = ?
-                AND MONTH(b.bill_month) = ?
-                AND YEAR(b.bill_month) = ?
-                AND b.status != 'CANCELLED'
-            """;
+                    SELECT 1
+                    FROM BILL b
+                    JOIN CONTRACT c ON b.contract_id = c.contract_id
+                    WHERE c.room_id = ?
+                    AND MONTH(b.bill_month) = ?
+                    AND YEAR(b.bill_month) = ?
+                    AND b.status != 'CANCELLED'
+                """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -666,17 +672,17 @@ public class BillDAO extends DBContext {
     @SuppressWarnings("CallToPrintStackTrace")
     public Payment getLastPaidAmountByTenant(int tenant_id) {
         String sql = """
-                        SELECT TOP 1 P.*
-                        FROM PAYMENT P
-                        JOIN BILL B ON P.bill_id = B.bill_id
-                        JOIN CONTRACT C ON B.contract_id = C.contract_id
-                        WHERE C.contract_id = (
-                            SELECT TOP 1 contract_id
-                            FROM CONTRACT
-                            WHERE tenant_id = ? AND status = 'ACTIVE'
-                        )
-                        ORDER BY P.paid_at DESC
-                    """;
+                    SELECT TOP 1 P.*
+                    FROM PAYMENT P
+                    JOIN BILL B ON P.bill_id = B.bill_id
+                    JOIN CONTRACT C ON B.contract_id = C.contract_id
+                    WHERE C.contract_id = (
+                        SELECT TOP 1 contract_id
+                        FROM CONTRACT
+                        WHERE tenant_id = ? AND status = 'ACTIVE'
+                    )
+                    ORDER BY P.paid_at DESC
+                """;
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, tenant_id);
@@ -728,13 +734,13 @@ public class BillDAO extends DBContext {
     @SuppressWarnings("CallToPrintStackTrace")
     public Bill findBillDetailByIdForTenant(int billId, int tenantId) {
         String sql = """
-                        SELECT b.*
-                        FROM BILL b
-                        JOIN CONTRACT c ON b.contract_id = c.contract_id
-                        WHERE b.bill_id = ?
-                        AND c.tenant_id = ?
-                        AND c.status = 'ACTIVE'
-                    """;
+                    SELECT b.*
+                    FROM BILL b
+                    JOIN CONTRACT c ON b.contract_id = c.contract_id
+                    WHERE b.bill_id = ?
+                    AND c.tenant_id = ?
+                    AND c.status = 'ACTIVE'
+                """;
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -771,22 +777,22 @@ public class BillDAO extends DBContext {
     public List<ManagerBillRowDTO> listBillForTenant(int tenant_id) {
         List<ManagerBillRowDTO> list = new ArrayList<>();
         String sql = """
-                        SELECT b.bill_id, r.room_number, b.bill_month,
-                            t.full_name AS tenant_name, bl.block_name,
-                            b.due_date,
-                            (SELECT COALESCE(SUM(d.unit_price * d.quantity), 0)
-                                FROM BILL_DETAIL d WHERE d.bill_id = b.bill_id) AS total_amount,
-                            b.status,
-                            p.status AS payment_status
-                        FROM BILL b
-                        JOIN CONTRACT c ON b.contract_id = c.contract_id
-                        JOIN TENANT t ON c.tenant_id = t.tenant_id
-                        JOIN ROOM r ON c.room_id = r.room_id
-                        JOIN BLOCK bl ON r.block_id = bl.block_id
-                        LEFT JOIN PAYMENT p ON p.bill_id = b.bill_id
-                        WHERE c.tenant_id = ? AND c.status = 'ACTIVE'
-                        ORDER BY CASE WHEN b.status = 'UNPAID' THEN 0 ELSE 1 END, b.bill_month DESC
-                    """;
+                    SELECT b.bill_id, r.room_number, b.bill_month,
+                        t.full_name AS tenant_name, bl.block_name,
+                        b.due_date,
+                        (SELECT COALESCE(SUM(d.unit_price * d.quantity), 0)
+                            FROM BILL_DETAIL d WHERE d.bill_id = b.bill_id) AS total_amount,
+                        b.status,
+                        p.status AS payment_status
+                    FROM BILL b
+                    JOIN CONTRACT c ON b.contract_id = c.contract_id
+                    JOIN TENANT t ON c.tenant_id = t.tenant_id
+                    JOIN ROOM r ON c.room_id = r.room_id
+                    JOIN BLOCK bl ON r.block_id = bl.block_id
+                    LEFT JOIN PAYMENT p ON p.bill_id = b.bill_id
+                    WHERE c.tenant_id = ? AND c.status = 'ACTIVE'
+                    ORDER BY CASE WHEN b.status = 'UNPAID' THEN 0 ELSE 1 END, b.bill_month DESC
+                """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, tenant_id);
             ResultSet rs = ps.executeQuery();
@@ -857,10 +863,10 @@ public class BillDAO extends DBContext {
     @SuppressWarnings("CallToPrintStackTrace")
     public RoomTenantDTO getContractDatesByRoomId(int roomId) {
         String sql = """
-        SELECT c.start_date, c.end_date
-        FROM CONTRACT c
-        WHERE c.room_id = ? AND c.status = 'ACTIVE'
-    """;
+                    SELECT c.start_date, c.end_date
+                    FROM CONTRACT c
+                    WHERE c.room_id = ? AND c.status = 'ACTIVE'
+                """;
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setInt(1, roomId);
             ResultSet rs = ps.executeQuery();
@@ -916,5 +922,41 @@ public class BillDAO extends DBContext {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Nguyen Huu Lap
+    // Lấy 10 bill gần nhất
+    public List<Bill> getLatest10Bills() {
+
+        List<Bill> list = new ArrayList<>();
+
+        String sql = """
+                    SELECT TOP 10 *
+                    FROM BILL
+                    WHERE status = 'PAID'
+                    ORDER BY due_date DESC
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Bill b = new Bill();
+
+                b.setBillId(rs.getInt("bill_id"));
+                b.setContractId(rs.getInt("contract_id"));
+                b.setBillMonth(rs.getDate("bill_month"));
+                b.setDueDate(rs.getDate("due_date"));
+                b.setStatus(rs.getString("status"));
+                b.setNote(rs.getString("note"));
+
+                list.add(b);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
