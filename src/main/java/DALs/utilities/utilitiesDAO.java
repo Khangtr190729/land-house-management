@@ -47,15 +47,15 @@ public class utilitiesDAO extends DBContext {
     public boolean addUtility(String utilityName, BigDecimal standardPrice, String unit) {
         String sql = "insert into utility(utility_name, standard_price, unit, is_active, status, created_at, updated_at) \n"
                 + "values(?, ?, ?, 1, 'ACTIVE', GETDATE(), GETDATE())";
-        //mình add tỏng sql là có 5 dữ liệu nên là 5 dấu hỏi á
+        // mình add tỏng sql là có 5 dữ liệu nên là 5 dấu hỏi á
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, utilityName);
             ps.setBigDecimal(2, standardPrice);
             ps.setString(3, unit);
 
-            //thay đổi dữ liệu nên xài executeUpdate()
-            //còn executeQuery() nó k có lm thay đổi 
+            // thay đổi dữ liệu nên xài executeUpdate()
+            // còn executeQuery() nó k có lm thay đổi
             int row = ps.executeUpdate();
             if (row > 0) {
                 return true;
@@ -127,8 +127,8 @@ public class utilitiesDAO extends DBContext {
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, id);
-            //trả về kiểu int kiểu số lượng dòng mình xóa hay mình thêm
-            //update mà ra 0 là k có update đc dòng nào
+            // trả về kiểu int kiểu số lượng dòng mình xóa hay mình thêm
+            // update mà ra 0 là k có update đc dòng nào
             int num = ps.executeUpdate();
             if (num > 0) {
                 return true;
@@ -155,7 +155,7 @@ public class utilitiesDAO extends DBContext {
         return false;
     }
 
-    //delete
+    // delete
     public boolean isUtilityUsedInBill(int id) {
         String sql = "SELECT COUNT(*) FROM BILL_DETAIL WHERE utility_id = ?";
         try {
@@ -200,7 +200,7 @@ public class utilitiesDAO extends DBContext {
         return list;
     }
 
-// tránh bị trùng tên utility name
+    // tránh bị trùng tên utility name
     public boolean isUtilityNameExists(String name) {
         String sql = "SELECT COUNT(*) FROM UTILITY WHERE LOWER(utility_name) = LOWER(?)";
         try {
@@ -214,5 +214,35 @@ public class utilitiesDAO extends DBContext {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Lấy danh sách Utinity ra dashborad
+    // Nguyen Huu Lap
+    public List<Utility> getListUtilities() {
+        List<Utility> list = new ArrayList<>();
+
+        String sql = """
+                    SELECT utility_id, utility_name, standard_price
+                    FROM UTILITY
+                """;
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Utility u = new Utility();
+                u.setUtilityId(rs.getInt("utility_id"));
+                u.setUtilityName(rs.getString("utility_name"));
+                u.setStandardPrice(rs.getBigDecimal("standard_price"));
+
+                list.add(u);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }

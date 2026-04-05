@@ -196,9 +196,108 @@
                     </svg>
                 </div>
             </div>
-                        
-                        
 
+            <!-- Active Contracts -->
+            <div class="dashboard-card card-contracts reveal-up" data-delay="480">
+                <div class="card-blur"></div>
+                <div class="card-shine"></div>
+                <div class="card-top-line"></div>
+
+                <div class="card-header">
+                    <div>
+                        <span class="card-label">Active Contracts</span>
+                        <small>Currently valid contracts</small>
+                    </div>
+                    <div class="card-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+                </div>
+
+                <div class="card-value">
+                    <h3 class="counter"
+                        data-value="${activeContracts}"
+                        data-suffix=""
+                        data-duration="1750">${activeContracts}</h3>
+                </div>
+
+                <div class="card-chart">
+                    <svg class="sparkline spark-indigo" viewBox="0 0 100 36" preserveAspectRatio="none">
+                        <polyline points="0,27 10,24 20,23 30,19 40,17 50,15 60,13 70,10 80,8 90,7 100,5"></polyline>
+                    </svg>
+                </div>
+            </div>    
+            <!-- List 10 bill -->
+            <div class="dashboard-card bills-card reveal-up" data-delay="560" style="grid-column: span 2;">
+                <div class="card-blur"></div>
+                <div class="card-shine"></div>
+                <div class="card-top-line"></div>
+
+                <div class="card-header">
+                    <div>
+                        <span class="card-label">Recent Bills</span>
+                        <small>Last 10 paid invoices</small>
+                    </div>
+                </div>
+
+                <div class="bills-table-wrap">
+                    <table class="bill-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Contract</th>
+                                <th>Month</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <c:forEach var="b" items="${latestBills}">
+                                <tr>
+                                    <td>#${b.billId}</td>
+                                    <td>${b.contractId}</td>
+                                    <td>${b.billMonth}</td>
+                                    <td>
+                                        <fmt:formatDate value="${b.dueDate}" pattern="dd/MM/yyyy"/>
+                                    </td>
+                                    <td>
+                                        <span class="status-badge ${b.status}">
+                                            ${b.status}
+                                        </span>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- List Utinity -->
+                <div class="dashboard-card utility-card reveal-up" data-delay="620" style="grid-column: span 1;">
+                <div class="card-blur"></div>
+                <div class="card-shine"></div>
+                <div class="card-top-line"></div>
+
+                <div class="card-header">
+                    <div>
+                        <span class="card-label">Utilities</span>
+                        <small>Service price list</small>
+                    </div>
+                </div>
+
+                <div class="utility-list">
+                    <c:forEach var="u" items="${utilities}">
+                        <div class="utility-item">
+                            <div class="utility-info">
+                                <span class="utility-name">${u.utilityName}</span>
+                                <span class="utility-id">#${u.utilityId}</span>
+                            </div>
+                            <div class="utility-price">
+                                <fmt:formatNumber value="${u.standardPrice}" type="number"/> đ
+                            </div>
+                        </div>
+                    </c:forEach>
+                </div>
+            </div>
+                        
         </div>
     </div>
 
