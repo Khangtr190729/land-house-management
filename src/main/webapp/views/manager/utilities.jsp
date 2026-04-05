@@ -157,7 +157,8 @@
                                         <span>
                                             <fmt:formatNumber value="${u.standardPrice}"
                                                               type="number"
-                                                              groupingUsed="true"/> đ/${u.unit}
+                                                              groupingUsed="true"
+                                                              maxFractionDigits="0"/> đ/${u.unit}
                                         </span>
                                     </div>
                                 </td>
@@ -315,7 +316,7 @@
                             <i class="bi bi-cash-stack"></i>
                             <input type="number"
                                    name="price"
-                                   value="${editUtility.standardPrice}"
+                                   value="<fmt:formatNumber value='${editUtility.standardPrice}' maxFractionDigits='0' groupingUsed='false'/>"
                                    min="0"
                                    required>
                         </div>
