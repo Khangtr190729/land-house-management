@@ -106,6 +106,53 @@
     });
   }
 
+  // ===== VALIDATION =====
+  function validateEditForm() {
+    const fullName    = $("#modal_fullName");
+    const phone       = $("#modal_phoneNumber");
+    const email       = $("#modal_email");
+    const identityCode = $("#modal_identityCode");
+    const dob         = $("#modal_dateOfBirth");
+
+    const fullNameVal     = fullName     ? fullName.value.trim()      : "";
+    const phoneVal        = phone        ? phone.value.trim()         : "";
+    const emailVal        = email        ? email.value.trim()         : "";
+    const identityVal     = identityCode ? identityCode.value.trim()  : "";
+    const dobVal          = dob          ? dob.value                  : "";
+
+    if (!fullNameVal) {
+      showToast("Full Name không được để trống.", "Validation Error");
+      shake(fullName ? fullName.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!phoneVal || !/^0\d{9}$/.test(phoneVal)) {
+      showToast("Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.", "Validation Error");
+      shake(phone ? phone.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      showToast("Email không hợp lệ.", "Validation Error");
+      shake(email ? email.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!identityVal || !/^\d{12}$/.test(identityVal)) {
+      showToast("Citizen ID phải đúng 12 chữ số.", "Validation Error");
+      shake(identityCode ? identityCode.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!dobVal) {
+      showToast("Vui lòng chọn ngày sinh.", "Validation Error");
+      shake(dob ? dob.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    return true;
+  }
+
   const editModal = $("#editModal");
   const confirmDialog = $("#confirmDialog");
   const toggleStatusDialog = $("#toggleStatusDialog");
@@ -218,6 +265,9 @@
   function initSaveConfirm() {
     if (openConfirmBtn) {
       openConfirmBtn.addEventListener("click", () => {
+        // ===== VALIDATE TRƯỚC KHI MỞ CONFIRM =====
+        if (!validateEditForm()) return;
+        // ==========================================
         openOverlay(confirmDialog, "flex");
       });
     }
