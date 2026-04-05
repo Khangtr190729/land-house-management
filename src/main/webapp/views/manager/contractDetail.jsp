@@ -602,17 +602,70 @@
                                 <fmt:formatNumber value="${c.deposit}" type="number" groupingUsed="true"/> ₫
                             </span>
                         </div>
-
-                        <div class="tcd-line">
-                            <span class="tcd-label"><i class="bi bi-credit-card"></i> Payment Method</span>
-                            <span class="tcd-value">Bank transfer or cash</span>
-                        </div>
                     </div>
 
-                    <div class="tcd-note">
-                        <i class="bi bi-info-circle"></i>
-                        <span>Note: Electricity and water charges are calculated separately based on actual usage.</span>
+
+                </div>
+
+                <div class="tcd-divider tcd-divider-soft"></div>
+
+                <!-- ARTICLE 4 -->
+                <div class="tcd-article">
+                    <div class="tcd-article-title">
+                        <i class="bi bi-shield-check"></i>
+                        ARTICLE 4: ACCOMMODATION POLICIES
                     </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label">
+                            <i class="bi bi-cash-stack"></i>
+                            Rental Price Policy
+                        </span>
+                        <span class="tcd-value">
+                            The rental price must remain unchanged during the active term of this contract.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label">
+                            <i class="bi bi-person-lines-fill"></i>
+                            Occupancy Policy
+                        </span>
+                        <span class="tcd-value">
+                            Only registered occupants listed in this contract are permitted to reside in the room.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label">
+                            <i class="bi bi-volume-up"></i>
+                            Noise Policy
+                        </span>
+                        <span class="tcd-value">
+                            Tenants and occupants must not cause noise or disturbances that affect surrounding rooms.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label">
+                            <i class="bi bi-tools"></i>
+                            Property Preservation
+                        </span>
+                        <span class="tcd-value">
+                            The tenant is responsible for keeping the room and its equipment in good condition during the rental period.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label">
+                            <i class="bi bi-exclamation-octagon"></i>
+                            Compliance
+                        </span>
+                        <span class="tcd-value">
+                            Any violation of accommodation policies may be handled according to the terms of the rental agreement and house rules.
+                        </span>
+                    </div>
+
                 </div>
 
                 <!-- latestPayment -->

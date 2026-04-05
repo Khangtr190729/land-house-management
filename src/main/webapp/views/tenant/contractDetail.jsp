@@ -556,21 +556,21 @@
                                 <c:otherwise>-</c:otherwise>
                             </c:choose>
                             <c:if test="${c.isMezzanine}">, Mezzanine</c:if>
-                            </span>
-                        </div>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="tcd-divider tcd-divider-soft"></div>
+
+                <div class="tcd-article tcd-reveal tcd-reveal-up">
+                    <div class="tcd-article-title">
+                        <i class="bi bi-calendar-range me-2"></i>
+                        ARTICLE 2: RENTAL PERIOD
                     </div>
 
-                    <div class="tcd-divider tcd-divider-soft"></div>
-
-                    <div class="tcd-article tcd-reveal tcd-reveal-up">
-                        <div class="tcd-article-title">
-                            <i class="bi bi-calendar-range me-2"></i>
-                            ARTICLE 2: RENTAL PERIOD
-                        </div>
-
-                        <div class="tcd-line">
-                            <span class="tcd-label"><i class="bi bi-calendar-check me-1"></i> Start Date:</span>
-                            <span class="tcd-value">
+                    <div class="tcd-line">
+                        <span class="tcd-label"><i class="bi bi-calendar-check me-1"></i> Start Date:</span>
+                        <span class="tcd-value">
                             <c:choose>
                                 <c:when test="${empty c.startDate}">-</c:when>
                                 <c:otherwise><fmt:formatDate value="${c.startDate}" pattern="dd/MM/yyyy"/></c:otherwise>
@@ -611,14 +611,53 @@
                         </span>
                     </div>
 
-                    <div class="tcd-line">
-                        <span class="tcd-label"><i class="bi bi-bank me-1"></i> Payment Method:</span>
-                        <span class="tcd-value">Bank transfer or cash</span>
-                    </div>
-
                     <div class="tcd-note">
                         <i class="bi bi-exclamation-circle me-1"></i>
                         Note: Electricity and water charges are calculated separately based on actual usage.
+                    </div>
+                </div>
+
+                <div class="tcd-divider tcd-divider-soft"></div>
+
+                <div class="tcd-article tcd-reveal tcd-reveal-up">
+                    <div class="tcd-article-title">
+                        <i class="bi bi-shield-check me-2"></i>
+                        ARTICLE 4: ACCOMMODATION POLICIES
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label"><i class="bi bi-cash-stack me-1"></i> Rental Price Policy:</span>
+                        <span class="tcd-value">
+                            The rental price must not be increased while this contract is still active.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label"><i class="bi bi-person-lines-fill me-1"></i> Occupancy Policy:</span>
+                        <span class="tcd-value">
+                            Only registered occupants listed in this contract are allowed to stay in the room.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label"><i class="bi bi-volume-up me-1"></i> Noise Policy:</span>
+                        <span class="tcd-value">
+                            Tenants and roommates must not cause noise that affects other residents.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label"><i class="bi bi-tools me-1"></i> Property Preservation:</span>
+                        <span class="tcd-value">
+                            The tenant must preserve the room and shared property in good condition during the rental period.
+                        </span>
+                    </div>
+
+                    <div class="tcd-line">
+                        <span class="tcd-label"><i class="bi bi-exclamation-octagon me-1"></i> Compliance:</span>
+                        <span class="tcd-value">
+                            Violations of accommodation policies may be handled according to the contract terms and house rules.
+                        </span>
                     </div>
                 </div>
 
