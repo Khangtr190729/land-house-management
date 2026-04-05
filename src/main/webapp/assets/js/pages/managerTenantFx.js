@@ -57,11 +57,9 @@
     overlay.classList.remove("is-open");
     overlay.setAttribute("aria-hidden", "true");
 
-    const finish = () => {
+    setTimeout(() => {
       overlay.style.display = "none";
-    };
-
-    setTimeout(finish, 320);
+    }, 320);
   }
 
   function showToast(message, title) {
@@ -106,8 +104,112 @@
     });
   }
 
-  const editModal = $("#editModal");
-  const confirmDialog = $("#confirmDialog");
+  // ===== SUCCESS POPUP =====
+  function closeSuccessPopup() {
+    const overlay = $("#successPopupOverlay");
+    if (!overlay) return;
+    overlay.classList.remove("mt-open", "is-open");
+    overlay.setAttribute("aria-hidden", "true");
+    setTimeout(() => {
+      overlay.style.display = "none";
+      // Xoá param ?success khỏi URL cho sạch
+      const url = new URL(window.location.href);
+      url.searchParams.delete("success");
+      window.history.replaceState({}, "", url.toString());
+    }, 350);
+  }
+
+  function showSuccessPopup(message) {
+    const overlay = $("#successPopupOverlay");
+    const msg = $("#successPopupMessage");
+    if (!overlay) return;
+
+    if (msg) msg.textContent = message || "Cập nhật thành công!";
+
+    overlay.style.display = "flex";
+    requestAnimationFrame(() => {
+      overlay.classList.add("mt-open", "is-open");
+      overlay.setAttribute("aria-hidden", "false");
+    });
+
+    clearTimeout(overlay._timer);
+    overlay._timer = setTimeout(() => closeSuccessPopup(), 3000);
+  }
+
+  function initSuccessPopup() {
+    const params = new URLSearchParams(window.location.search);
+    const success = params.get("success");
+
+    if (success === "updated") {
+      showSuccessPopup("Tenant information has been successfully updated!");
+    } else if (success === "password_reset") {
+      showSuccessPopup("Password has been successfully reset!");
+    } else if (success === "status_changed") {
+      showSuccessPopup("The tenant's status has been successfully changed!");
+    }
+
+    const closeBtn = $("#successPopupClose");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", closeSuccessPopup);
+    }
+
+    const overlay = $("#successPopupOverlay");
+    if (overlay) {
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) closeSuccessPopup();
+      });
+    }
+  }
+
+  // ===== VALIDATION =====
+  function validateEditForm() {
+    const fullName     = $("#modal_fullName");
+    const phone        = $("#modal_phoneNumber");
+    const email        = $("#modal_email");
+    const identityCode = $("#modal_identityCode");
+    const dob          = $("#modal_dateOfBirth");
+
+    const fullNameVal  = fullName     ? fullName.value.trim()      : "";
+    const phoneVal     = phone        ? phone.value.trim()         : "";
+    const emailVal     = email        ? email.value.trim()         : "";
+    const identityVal  = identityCode ? identityCode.value.trim()  : "";
+    const dobVal       = dob          ? dob.value                  : "";
+
+    if (!fullNameVal) {
+      showToast("Full Name không được để trống.", "Validation Error");
+      shake(fullName ? fullName.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!phoneVal || !/^0\d{9}$/.test(phoneVal)) {
+      showToast("Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số.", "Validation Error");
+      shake(phone ? phone.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      showToast("Email không hợp lệ.", "Validation Error");
+      shake(email ? email.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!identityVal || !/^\d{12}$/.test(identityVal)) {
+      showToast("Citizen ID phải đúng 12 chữ số.", "Validation Error");
+      shake(identityCode ? identityCode.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    if (!dobVal) {
+      showToast("Vui lòng chọn ngày sinh.", "Validation Error");
+      shake(dob ? dob.closest(".modal-field-row") : null);
+      return false;
+    }
+
+    return true;
+  }
+
+  const editModal          = $("#editModal");
+  const confirmDialog      = $("#confirmDialog");
   const toggleStatusDialog = $("#toggleStatusDialog");
   const resetPasswordModal = $("#resetPasswordModal");
 
@@ -115,15 +217,13 @@
   const openConfirmBtn = $("#openConfirmBtn");
   const confirmSaveBtn = $("#confirmSaveBtn");
 
-  const resetPasswordForm = $("#resetPasswordForm");
-  const rpError = $("#rpError");
-
+  const resetPasswordForm    = $("#resetPasswordForm");
+  const rpError              = $("#rpError");
   const btnOpenResetPassword = $("#btnOpenResetPassword");
-  const btnCancelToggle = $("#btnCancelToggle");
-  const btnConfirmToggle = $("#btnConfirmToggle");
-
-  const toggleStatusForm = $("#toggleStatusForm");
-  const toggleTenantId = $("#toggleTenantId");
+  const btnCancelToggle      = $("#btnCancelToggle");
+  const btnConfirmToggle     = $("#btnConfirmToggle");
+  const toggleStatusForm     = $("#toggleStatusForm");
+  const toggleTenantId       = $("#toggleTenantId");
 
   let pendingTenantId = null;
 
@@ -142,21 +242,21 @@
   function fillEditModal(btn) {
     const hasRoom = btn.dataset.hasRoom === "true";
 
-    $("#modal_tenantId").value = safeText(btn.dataset.tenantId);
-    $("#modal_fullName").value = safeText(btn.dataset.fullname);
+    $("#modal_tenantId").value     = safeText(btn.dataset.tenantId);
+    $("#modal_fullName").value     = safeText(btn.dataset.fullname);
     $("#modal_identityCode").value = safeText(btn.dataset.identity);
-    $("#modal_phoneNumber").value = safeText(btn.dataset.phone);
-    $("#modal_email").value = safeText(btn.dataset.email);
-    $("#modal_dateOfBirth").value = safeText(btn.dataset.dob);
-    $("#modal_address").value = safeText(btn.dataset.address);
+    $("#modal_phoneNumber").value  = safeText(btn.dataset.phone);
+    $("#modal_email").value        = safeText(btn.dataset.email);
+    $("#modal_dateOfBirth").value  = safeText(btn.dataset.dob);
+    $("#modal_address").value      = safeText(btn.dataset.address);
 
     const g = btn.dataset.gender;
     $("#modal_gender").value =
       g !== undefined && g !== "null" && g !== "" ? g : "";
 
     const titleNode = $("#editModalTitle");
-    const badge = $("#viewOnlyBadge");
-    const subtitle = $("#editModalSubtitle");
+    const badge     = $("#viewOnlyBadge");
+    const subtitle  = $("#editModalSubtitle");
 
     if (titleNode && titleNode.childNodes.length > 0) {
       titleNode.childNodes[0].nodeValue = hasRoom
@@ -187,8 +287,8 @@
     if (openConfirmBtn) openConfirmBtn.style.display = hasRoom ? "" : "none";
 
     if (btnOpenResetPassword) {
-      btnOpenResetPassword.style.display = hasRoom ? "" : "none";
-      btnOpenResetPassword.dataset.tenantId = safeText(btn.dataset.tenantId);
+      btnOpenResetPassword.style.display   = hasRoom ? "" : "none";
+      btnOpenResetPassword.dataset.tenantId   = safeText(btn.dataset.tenantId);
       btnOpenResetPassword.dataset.tenantName = safeText(btn.dataset.fullname);
     }
   }
@@ -218,6 +318,7 @@
   function initSaveConfirm() {
     if (openConfirmBtn) {
       openConfirmBtn.addEventListener("click", () => {
+        if (!validateEditForm()) return;
         openOverlay(confirmDialog, "flex");
       });
     }
@@ -275,7 +376,7 @@
           "Đặt lại mật khẩu cho: " +
           (btnOpenResetPassword.dataset.tenantName || "");
 
-        $("#rp_newPassword").value = "";
+        $("#rp_newPassword").value     = "";
         $("#rp_confirmPassword").value = "";
         rpError.classList.remove("is-show");
         rpError.textContent = "";
@@ -308,8 +409,8 @@
       resetPasswordForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        const tenantId = $("#rp_tenantId").value;
-        const newPwd = $("#rp_newPassword").value;
+        const tenantId   = $("#rp_tenantId").value;
+        const newPwd     = $("#rp_newPassword").value;
         const confirmPwd = $("#rp_confirmPassword").value;
 
         rpError.classList.remove("is-show");
@@ -336,17 +437,17 @@
         form.action = ctx + "/manager/tenant/edit";
 
         const hiddenFields = {
-          action: "resetPassword",
-          tenantId: tenantId,
+          action:      "resetPassword",
+          tenantId:    tenantId,
           newPassword: newPwd,
-          page: cfg.currentPage || "",
-          keyword: cfg.keyword || "",
+          page:        cfg.currentPage || "",
+          keyword:     cfg.keyword || "",
         };
 
         Object.entries(hiddenFields).forEach(([k, v]) => {
           const inp = document.createElement("input");
-          inp.type = "hidden";
-          inp.name = k;
+          inp.type  = "hidden";
+          inp.name  = k;
           inp.value = v;
           form.appendChild(inp);
         });
@@ -360,24 +461,23 @@
   function initToggleStatus() {
     $$(".js-toggle-status").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const tenantId = btn.dataset.tenantId;
+        const tenantId   = btn.dataset.tenantId;
         const tenantName = btn.dataset.tenantName || "Tenant #" + tenantId;
-        const current = btn.dataset.currentStatus;
-        const toLock = current === "ACTIVE";
+        const current    = btn.dataset.currentStatus;
+        const toLock     = current === "ACTIVE";
 
         pendingTenantId = tenantId;
 
-        const icon = $("#toggleConfirmIcon");
+        const icon  = $("#toggleConfirmIcon");
         const title = $("#toggleConfirmTitle");
-        const sub = $("#toggleConfirmSub");
+        const sub   = $("#toggleConfirmSub");
         const okBtn = $("#btnConfirmToggle");
 
         if (toLock) {
           icon.innerHTML = '<i class="bi bi-lock-fill"></i>';
           icon.className = "toggle-confirm-icon to-lock";
           title.textContent = "Lock Tenant?";
-          sub.textContent =
-            'Tenant "' + tenantName + '" will be locked and cannot log in.';
+          sub.textContent = 'Tenant "' + tenantName + '" will be locked and cannot log in.';
           okBtn.className = "toggle-confirm-ok btn-lock";
           okBtn.innerHTML = '<i class="bi bi-lock-fill"></i> Lock';
         } else {
@@ -421,7 +521,7 @@
 
   function initToastClose() {
     const closeBtn = $("#toastCloseBtn");
-    const toast = $("#errorToast");
+    const toast    = $("#errorToast");
 
     if (closeBtn && toast) {
       closeBtn.addEventListener("click", () => {
@@ -435,19 +535,19 @@
     document.addEventListener("keydown", (e) => {
       if (e.key !== "Escape") return;
 
-      if (
-        resetPasswordModal &&
-        resetPasswordModal.classList.contains("mt-open")
-      ) {
+      const successOverlay = $("#successPopupOverlay");
+      if (successOverlay && successOverlay.classList.contains("mt-open")) {
+        closeSuccessPopup();
+        return;
+      }
+
+      if (resetPasswordModal && resetPasswordModal.classList.contains("mt-open")) {
         closeOverlay(resetPasswordModal);
         setTimeout(() => openOverlay(editModal, "flex"), 120);
         return;
       }
 
-      if (
-        toggleStatusDialog &&
-        toggleStatusDialog.classList.contains("mt-open")
-      ) {
+      if (toggleStatusDialog && toggleStatusDialog.classList.contains("mt-open")) {
         closeOverlay(toggleStatusDialog);
         pendingTenantId = null;
         return;
@@ -474,5 +574,6 @@
     initToggleStatus();
     initToastClose();
     initKeyboardShortcuts();
+    initSuccessPopup();
   });
 })();
