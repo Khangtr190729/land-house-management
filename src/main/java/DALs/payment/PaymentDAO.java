@@ -137,6 +137,8 @@ public class PaymentDAO extends DBContext {
         return false;
     }
 
+    // Lấy danh thu tháng hiện tại
+    // Nguyen Huu Lap
     public double getMonthlyRevenue() {
 
         String sql = """
@@ -159,16 +161,63 @@ public class PaymentDAO extends DBContext {
 
         return 0;
     }
-
-    public double getTotalRevenue() {
-
+    // danh thu 3 tháng
+    // Nguyen Huu Lap
+public double getRevenueLast3Months() {
         String sql = """
                     SELECT SUM(amount)
                     FROM PAYMENT
                     WHERE status = 'CONFIRMED'
+                      AND paid_at >= DATEADD(MONTH, -3, GETDATE())
                 """;
 
-        try (PreparedStatement ps = connection.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+// 6 tháng danh thu
+// Nguyen Huu Lap
+    public double getRevenueLast6Months() {
+        String sql = """
+                    SELECT SUM(amount)
+                    FROM PAYMENT
+                    WHERE status = 'CONFIRMED'
+                      AND paid_at >= DATEADD(MONTH, -6, GETDATE())
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+// danh thu 1 năm
+    public double getRevenueLast1Year() {
+        String sql = """
+                    SELECT SUM(amount)
+                    FROM PAYMENT
+                    WHERE status = 'CONFIRMED'
+                      AND paid_at >= DATEADD(YEAR, -1, GETDATE())
+                """;
+
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()) {
 
             if (rs.next()) {
                 return rs.getDouble(1);
