@@ -108,7 +108,7 @@ public class ManagerEditAndDeleteTenantController extends HttpServlet {
         }
 
         // Redirect về đúng trang sau khi edit thành công
-        StringBuilder redirectUrl = new StringBuilder(request.getContextPath() + "/manager/tenants");
+        StringBuilder redirectUrl = new StringBuilder(request.getContextPath() + "/manager/tenants?success=updated");
         appendPageKeyword(redirectUrl, page, keyword);
         response.sendRedirect(redirectUrl.toString());
     }
@@ -156,7 +156,7 @@ public class ManagerEditAndDeleteTenantController extends HttpServlet {
             return;
         }
 
-        StringBuilder redirectUrl = new StringBuilder(request.getContextPath() + "/manager/tenants?success=1");
+        StringBuilder redirectUrl = new StringBuilder(request.getContextPath() + "/manager/tenants?success=status_changed");
         appendPageKeyword(redirectUrl, page, keyword);
         response.sendRedirect(redirectUrl.toString());
     }
@@ -216,7 +216,7 @@ public class ManagerEditAndDeleteTenantController extends HttpServlet {
         }
 
         // Thành công
-        StringBuilder redirectUrl = new StringBuilder(request.getContextPath() + "/manager/tenants?success=1");
+        StringBuilder redirectUrl = new StringBuilder(request.getContextPath() + "/manager/tenants?success=password_reset");
         appendPageKeyword(redirectUrl, page, keyword);
         response.sendRedirect(redirectUrl.toString());
     }

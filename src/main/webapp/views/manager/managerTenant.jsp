@@ -290,6 +290,108 @@
             gap: 6px;
         }
         .modal-btn-reset:hover { background: #fee2e2; }
+        /* ===== SUCCESS POPUP ===== */
+.success-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1500;
+    align-items: center;
+    justify-content: center;
+}
+.success-popup-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px 36px 32px;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18);
+    text-align: center;
+    position: relative;
+    transform: translateY(28px) scale(0.92);
+    opacity: 0;
+    transition:
+        transform 0.42s cubic-bezier(0.34, 1.56, 0.64, 1),
+        opacity 0.28s ease;
+}
+.success-popup-overlay.mt-open .success-popup-box {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+.success-popup-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 2rem;
+    color: #fff;
+    box-shadow: 0 12px 28px rgba(34, 197, 94, 0.35);
+    animation: successIconPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+}
+@keyframes successIconPop {
+    0%   { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+.success-popup-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 8px;
+}
+.success-popup-message {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 28px;
+    line-height: 1.5;
+}
+.success-popup-progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 4px;
+    width: 100%;
+    border-radius: 0 0 20px 20px;
+    background: #f1f5f9;
+    overflow: hidden;
+}
+.success-popup-progress-bar {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    transform-origin: left center;
+    animation: successTimer 3s linear forwards;
+}
+@keyframes successTimer {
+    from { transform: scaleX(1); }
+    to   { transform: scaleX(0); }
+}
+.success-popup-btn {
+    padding: 10px 28px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    box-shadow: 0 8px 20px rgba(34, 197, 94, 0.28);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.success-popup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 26px rgba(34, 197, 94, 0.36);
+}
+.success-popup-btn:active {
+    transform: scale(0.97);
+}
     </style>
 
     <div class="mt-container">
@@ -710,7 +812,24 @@
             <i class="bi bi-x-lg"></i>
         </button>
     </div>
-
+<!-- ===== SUCCESS POPUP ===== -->
+<div class="success-popup-overlay" id="successPopupOverlay" aria-hidden="true">
+    <div class="success-popup-box" role="dialog" aria-modal="true" aria-labelledby="successPopupTitle">
+        <div class="success-popup-icon">
+            <i class="bi bi-check-lg"></i>
+        </div>
+        <div class="success-popup-title" id="successPopupTitle">Update successful!</div>
+        <div class="success-popup-message" id="successPopupMessage">
+            Update successful!
+        </div>
+        <button type="button" class="success-popup-btn" id="successPopupClose">
+            <i class="bi bi-check2-circle"></i> OK
+        </button>
+        <div class="success-popup-progress">
+            <div class="success-popup-progress-bar"></div>
+        </div>
+    </div>
+</div>
     <script>
         window.MANAGER_TENANT_CONFIG = {
             ctx: '${ctx}',
