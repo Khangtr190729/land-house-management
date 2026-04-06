@@ -932,4 +932,23 @@ public class ContractDAO extends DBContext {
         }
 
     }
+
+    /**
+     * Check business rule: tenant chỉ được có tối đa 1 ACTIVE hoặc 1 PENDING
+     * tại 1 thời điểm.
+     */
+    public boolean existsActiveOrPendingByTenant(Connection conn, int tenantId) throws SQLException {
+        String sql = """
+                    SELECT TOP 1 1
+                    FROM CONTRACT
+                    WHERE tenant_id = ?
+                      AND [status] IN ('ACTIVE','PENDING')
+                """;
+        try (var ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, tenantId);
+            try (var rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
 }

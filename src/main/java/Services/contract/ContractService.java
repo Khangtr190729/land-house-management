@@ -72,6 +72,11 @@ public class ContractService {
         if (t.getDateOfBirth() == null) {
             return ServiceResult.fail("Ngày sinh tenant không được để trống.");
         }
+
+        if (t.getDateOfBirth().toLocalDate().plusYears(18).isAfter(java.time.LocalDate.now())) {
+            return ServiceResult.fail("Tennat phải đủ 18 tuổi trở lên mới được thuê trọ");
+        }
+
         if (t.getGender() == null) {
             return ServiceResult.fail("Giới tính tenant không được để trống.");
         }
@@ -116,7 +121,7 @@ public class ContractService {
                 return ServiceResult.fail("Không tạo được tenant (PENDING).");
             }
 
-            if (existsActiveOrPendingByTenant(conn, tenantId)) {
+            if (contractDAO.existsActiveOrPendingByTenant(conn, tenantId)) {
                 conn.rollback();
                 return ServiceResult.fail("Tenant này đang có hợp đồng ACTIVE/PENDING. Không thể tạo thêm.");
             }
@@ -194,7 +199,7 @@ public class ContractService {
             }
 
             // 2) Chặn tenant đã có ACTIVE hoặc PENDING
-            if (existsActiveOrPendingByTenant(conn, tenantId)) {
+            if (contractDAO.existsActiveOrPendingByTenant(conn, tenantId)) {
                 conn.rollback();
                 return ServiceResult.fail("Tenant này đang có hợp đồng ACTIVE/PENDING. Không thể tạo thêm.");
             }
@@ -274,25 +279,6 @@ public class ContractService {
         c.setPaymentQrData(qr);
 
         return ServiceResult.ok("OK");
-    }
-
-    /**
-     * Check business rule: tenant chỉ được có tối đa 1 ACTIVE hoặc 1 PENDING
-     * tại 1 thời điểm.
-     */
-    private boolean existsActiveOrPendingByTenant(Connection conn, int tenantId) throws SQLException {
-        String sql = """
-                    SELECT TOP 1 1
-                    FROM CONTRACT
-                    WHERE tenant_id = ?
-                      AND [status] IN ('ACTIVE','PENDING')
-                """;
-        try (var ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, tenantId);
-            try (var rs = ps.executeQuery()) {
-                return rs.next();
-            }
-        }
     }
 
     private String safe(String s) {
