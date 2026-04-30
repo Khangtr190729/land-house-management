@@ -153,26 +153,31 @@ public class ContractService {
     //FLOW 2: CREATE CONTRACT FOR EXISTING TENANT (HAS ACCOUNT)
     //block: tenant chỉ được có 1 ACTIVE hoặc 1 PENDING (cùng lúc)
     @SuppressWarnings("UseSpecificCatch")
-    public ServiceResult createContractForExistingTenant(Contract c, int tenantId) {
+    public ServiceResult createContractForExistingTenant(
+            Contract c,
+            int tenantId,
+            String cccdFrontUrl,
+            String cccdBackUrl
+    ) {
 
         if (tenantId <= 0) {
             return ServiceResult.fail("Tenant không hợp lệ.");
         }
 
-        // Validate contract fields common
+        if (safe(cccdFrontUrl).isBlank() || safe(cccdBackUrl).isBlank()) {
+            return ServiceResult.fail("Thiếu ảnh CCCD tenant.");
+        }
+
         ServiceResult vc = validateContractCommon(c);
         if (!vc.isOk()) {
             return vc;
         }
 
-        // set tenantId vào contract
-        c.setTenantId(tenantId);
-
         try (Connection conn = new DBContext().getConnection()) {
 
             conn.setAutoCommit(false);
 
-            // 1) Check tenant có tồn tại + ACTIVE (đúng list dropdown)
+            // 1) Check tenant có tồn tại + ACTIVE
             Tenant t = tenantDAO.findById(tenantId);
             if (t == null) {
                 conn.rollback();
@@ -189,22 +194,34 @@ public class ContractService {
                 return ServiceResult.fail("Tenant này đang có hợp đồng ACTIVE/PENDING. Không thể tạo thêm.");
             }
 
-            // 3) Insert contract PENDING
+            // 3) Set tenantId vào contract
+            c.setTenantId(tenantId);
+
+            // 4) Insert contract PENDING
             int newId = contractDAO.insertPendingContract(conn, c);
             if (newId <= 0) {
                 conn.rollback();
                 return ServiceResult.fail("Không tạo được contract (PENDING).");
             }
 
-            // 3.1) Insert PRIMARY occupant
+            // 5) Insert PRIMARY occupant
             int primaryOccupantId = contractOccupantDAO.insertPrimary(conn, newId, tenantId, c.getStartDate(), "PENDING");
             if (primaryOccupantId <= 0) {
                 conn.rollback();
                 return ServiceResult.fail("Không tạo được người ở chính cho hợp đồng.");
             }
 
+            // 6) Insert CCCD document cho tenant existing
+            int frontDocId = tenantDocumentDAO.insertDocument(conn, tenantId, "CCCD_FRONT", cccdFrontUrl);
+            int backDocId = tenantDocumentDAO.insertDocument(conn, tenantId, "CCCD_BACK", cccdBackUrl);
+
+            if (frontDocId <= 0 || backDocId <= 0) {
+                conn.rollback();
+                return ServiceResult.fail("Không lưu được CCCD tenant.");
+            }
+
             conn.commit();
-            return ServiceResult.ok("Tạo contract (PENDING) cho tenant có account thành công.");
+            return ServiceResult.ok("Tạo contract (PENDING) cho tenant có account + lưu CCCD thành công.");
 
         } catch (SQLException e) {
             return ServiceResult.fail(mapSqlErrorToUi(e));
