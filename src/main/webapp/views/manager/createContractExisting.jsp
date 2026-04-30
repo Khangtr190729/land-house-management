@@ -56,7 +56,8 @@
                 </div>
             </c:if>
 
-            <form method="post"
+            <form id="createExistingContractForm"
+                  method="post"
                   action="${pageContext.request.contextPath}/manager/contracts/create-existing"
                   class="mcc-form"
                   enctype="multipart/form-data">
@@ -78,9 +79,9 @@
                         </label>
 
                         <div class="mcc-control">
-                            <select name="roomId" class="form-control mcc-control-input" required>
+                            <select id="roomId" name="roomId" class="form-control mcc-control-input" required>
                                 <c:forEach var="r" items="${rooms}">
-                                    <option value="${r.roomId}">
+                                    <option value="${r.roomId}" data-price="${r.price}">
                                         ${r.roomNumber} - ${r.price}
                                     </option>
                                 </c:forEach>
@@ -111,7 +112,7 @@
                         </label>
 
                         <div class="mcc-control">
-                            <select name="tenantId" class="form-control mcc-control-input" required>
+                            <select id="tenantId" name="tenantId" class="form-control mcc-control-input" required>
                                 <c:forEach var="t" items="${tenants}">
                                     <option value="${t.tenantId}">
                                         ${t.fullName} - ${t.email} - ${t.phoneNumber}
@@ -145,6 +146,7 @@
                             </label>
                             <div class="mcc-control">
                                 <input type="file"
+                                       id="cccdFront"
                                        name="cccdFront"
                                        accept=".jpg,.jpeg,.png,.webp,image/*"
                                        class="form-control mcc-control-input"
@@ -159,6 +161,7 @@
                             </label>
                             <div class="mcc-control">
                                 <input type="file"
+                                       id="cccdBack"
                                        name="cccdBack"
                                        accept=".jpg,.jpeg,.png,.webp,image/*"
                                        class="form-control mcc-control-input"
@@ -185,8 +188,12 @@
                                 Monthly Rent
                             </label>
                             <div class="mcc-control">
-                                <input type="number" name="rent" class="form-control mcc-control-input"
-                                       required min="0"
+                                <input type="number"
+                                       id="rent"
+                                       name="rent"
+                                       class="form-control mcc-control-input"
+                                       required
+                                       min="0"
                                        placeholder="e.g. 3500000">
                             </div>
                         </div>
@@ -197,7 +204,10 @@
                                 Deposit
                             </label>
                             <div class="mcc-control">
-                                <input type="number" name="deposit" class="form-control mcc-control-input"
+                                <input type="number"
+                                       id="deposit"
+                                       name="deposit"
+                                       class="form-control mcc-control-input"
                                        required min="0"
                                        placeholder="e.g. 7000000">
                             </div>
@@ -211,7 +221,11 @@
                                 Start Date
                             </label>
                             <div class="mcc-control">
-                                <input type="date" name="startDate" class="form-control mcc-control-input" required>
+                                <input type="date"
+                                       id="startDate"
+                                       name="startDate"
+                                       class="form-control mcc-control-input"
+                                       required>
                             </div>
                         </div>
 
@@ -221,14 +235,19 @@
                                 End Date
                             </label>
                             <div class="mcc-control">
-                                <input type="date" name="endDate" class="form-control mcc-control-input" required>
+                                <input type="date"
+                                       id="endDate"
+                                       name="endDate"
+                                       class="form-control mcc-control-input"
+                                       required
+                                       readonly>
                             </div>
                         </div>
                     </div>
 
                     <div class="mcc-help mcc-help-compact">
                         <i class="bi bi-info-circle"></i>
-                        This flow creates a PENDING contract directly (no OTP confirmation required).
+                        Contract period is fixed to 1 year from the selected start date. Rent is filled from room price. Deposit defaults to 2 months rent.
                     </div>
                 </div>
 
@@ -249,5 +268,7 @@
             </form>
         </div>
     </div>
+
+    <script src="${pageContext.request.contextPath}/assets/js/pages/createExistingContract.js"></script>
 
 </layout:layout>

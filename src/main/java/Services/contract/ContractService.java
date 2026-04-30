@@ -1,6 +1,7 @@
 package Services.contract;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Random;
@@ -250,8 +251,10 @@ public class ContractService {
         if (c.getEndDate() == null) {
             return ServiceResult.fail("End date không được để trống.");
         }
-        if (!c.getEndDate().after(c.getStartDate())) {
-            return ServiceResult.fail("End date phải lớn hơn start date.");
+
+        Date expectedEndDate = Date.valueOf(c.getStartDate().toLocalDate().plusYears(1));
+        if (!c.getEndDate().equals(expectedEndDate)) {
+            return ServiceResult.fail("Hợp đồng phải có thời hạn đúng 1 năm kể từ ngày bắt đầu.");
         }
 
         String qr = safe(c.getPaymentQrData());
@@ -306,9 +309,9 @@ public class ContractService {
             return "Phòng này đã có hợp đồng PENDING rồi.";
         }
 
-        // check end_date > start_date
-        if (m.contains("ck_contract_end_after_start")) {
-            return "Ngày kết thúc phải lớn hơn ngày bắt đầu.";
+        // check end_date = start_date + 1 year
+        if (m.contains("ck_contract_duration_one_year")) {
+            return "Hợp đồng phải có thời hạn đúng 1 năm kể từ ngày bắt đầu.";
         }
 
         // money nonnegative
@@ -331,8 +334,8 @@ public class ContractService {
 
         return "Lỗi SQL: " + e.getMessage();
     }
-    //VIEW CONTRACT LIST
 
+    //VIEW CONTRACT LIST
     public int countContracts(String keyword, String status) {
         return contractDAO.countManagerContracts(keyword, status);
     }
